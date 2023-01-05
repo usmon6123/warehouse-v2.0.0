@@ -9,9 +9,9 @@ public interface ProductService {
 
     ApiResult<?> getOne(Long productId);
 
-    List<ProductResDto> getAllProductsByCategoryId(Long categoryId);
+    List<ProductResDto> getAllProductsByPCId(Long pCId);
 
-    List<OptionResDto> getProductsForOptionByCategoryId(Long categoryId);
+    List<OptionResDto> getProductsForOptionByPCId(Long pCId);
 
     ApiResult<?> edit(Long productId, ProductReqDto productReqDto);
 

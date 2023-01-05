@@ -153,9 +153,7 @@ public class ClientServiceImpl implements ClientService {
 
         return new ClientOrderDto(
                 dateFormat,
-                orderItem.getProduct().getCategory().getName(),
                 orderItem.getProduct().getName(),
-                orderItem.getProduct().getCode(),
                 orderItem.getCount(),
                 orderItem.getAmount(),
                 orderItem.getCurrencyType(),

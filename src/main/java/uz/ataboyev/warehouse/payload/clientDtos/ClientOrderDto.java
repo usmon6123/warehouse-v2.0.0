@@ -16,14 +16,11 @@ public class ClientOrderDto {
     @NotNull(message = "date")
     private String date;
 
-    @NotNull(message = "categoryId_not_null")
-    private String categoryName;
+//    @NotNull(message = "productCompanyName_not_null")
+//    private String productCompanyName;
 
-    @NotNull(message = "productId_not_null")
+    @NotNull(message = "productName_not_null")
     private String productName;
-
-    @NotNull(message = "code_not_null")
-    private String code;
 
     @NotNull(message = "count_not_null")
     private Double count;
@@ -43,14 +40,17 @@ public class ClientOrderDto {
     public static ClientOrderDto make(OrderItemByOrderId orderItemByOrderId) {
         return new ClientOrderDto(
                 orderItemByOrderId.getDate(),
-                orderItemByOrderId.getCategoryName(),
+//                orderItemByOrderId.getProductCompanyName(),
                 orderItemByOrderId.getProductName(),
-                orderItemByOrderId.getCode(),
-                Double.parseDouble(orderItemByOrderId.getCount()),
-                Double.parseDouble(orderItemByOrderId.getCountSum()),
+                StringParseDouble(orderItemByOrderId.getCount()),
+                StringParseDouble(orderItemByOrderId.getCountSum()),
                 CurrencyTypeEnum.valueOf(orderItemByOrderId.getCurrencyTypeEnum()),
-                Double.parseDouble(orderItemByOrderId.getPrice()),
+                StringParseDouble(orderItemByOrderId.getPrice()),
                 PayTypeEnum.valueOf(orderItemByOrderId.getPayType())
         );
+    }
+
+    private static Double StringParseDouble(String stringNumber) {
+        return Double.parseDouble(stringNumber);
     }
 }

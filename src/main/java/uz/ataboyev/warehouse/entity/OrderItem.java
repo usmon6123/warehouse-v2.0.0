@@ -21,13 +21,15 @@ import static uz.ataboyev.warehouse.service.base.BaseService.minus1;
 @Entity
 public class OrderItem extends AbsLongEntity {
 
+//--------------------------------------------------------------------------
     @JoinColumn(name = "order_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-
     @Column(name = "order_id", nullable = false)
     private Long orderId;
+
+//--------------------------------------------------------------------------
 
     @JoinColumn(insertable = false, updatable = false, name = "product_id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,12 +38,14 @@ public class OrderItem extends AbsLongEntity {
     @Column(nullable = false, name = "product_id")
     private Long productId;
 
+//--------------------------------------------------------------------------
+
     @Column(nullable = false)
     private Double count;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private CurrencyTypeEnum currencyType;
+    private CurrencyTypeEnum currencyType; //to'lov valyutasi SUM yoki DOLLAR
 
     @Column(nullable = false)
     private Double amount;//dona summasi

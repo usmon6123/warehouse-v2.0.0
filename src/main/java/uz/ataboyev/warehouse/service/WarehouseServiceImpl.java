@@ -3,13 +3,13 @@ package uz.ataboyev.warehouse.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import uz.ataboyev.warehouse.entity.ProductCompany;
 import uz.ataboyev.warehouse.entity.Warehouse;
 import uz.ataboyev.warehouse.exception.RestException;
 import uz.ataboyev.warehouse.payload.ApiResult;
 import uz.ataboyev.warehouse.payload.WareHouseReqDto;
 import uz.ataboyev.warehouse.payload.WareHouseResDto;
-import uz.ataboyev.warehouse.repository.CategoryRepository;
-import uz.ataboyev.warehouse.repository.CompanyRepository;
+import uz.ataboyev.warehouse.repository.ProductCompanyRepository;
 import uz.ataboyev.warehouse.repository.WarehouseRepository;
 import uz.ataboyev.warehouse.service.base.BaseService;
 
@@ -22,7 +22,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private final WarehouseRepository warehouseRepository;
     private final BaseService baseService;
-    private final CategoryRepository categoryRepository;
+    private final ProductCompanyRepository productCompanyRepository;
 
 
     @Override
@@ -72,7 +72,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     public ApiResult<?> delete(Long whId) {
         if (!warehouseRepository.existsById(whId))
             throw RestException.restThrow("Omborxona mavjudmas", HttpStatus.NOT_FOUND);
-        if (categoryRepository.existsByWarehouseId(whId))
+        if (productCompanyRepository.existsByWarehouseId(whId))
             throw RestException.restThrow("Omborxonada maxsulotlar bor o'chira olmaysiz", HttpStatus.CONFLICT);
         warehouseRepository.deleteById(whId);
         return ApiResult.successResponse("deleted warehouse");

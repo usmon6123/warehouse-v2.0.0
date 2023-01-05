@@ -24,8 +24,8 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public List<ProductResDto> getAllProductByCategoryId(Long categoryId) {
-        return productService.getAllProductsByCategoryId(categoryId);
+    public List<ProductResDto> getAllProductByPCId(Long pCId) {
+        return productService.getAllProductsByPCId(pCId);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public List<OptionResDto> getProductsForOption(Long categoryId) {
-        return productService.getProductsForOptionByCategoryId(categoryId);
+    public List<OptionResDto> getProductsForOption(Long pCId) {
+        return productService.getProductsForOptionByPCId(pCId);
     }
 
     @Override

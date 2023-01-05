@@ -3,9 +3,9 @@ package uz.ataboyev.warehouse.payload;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.ataboyev.warehouse.entity.Category;
 import uz.ataboyev.warehouse.entity.Client;
 import uz.ataboyev.warehouse.entity.Product;
+import uz.ataboyev.warehouse.entity.ProductCompany;
 
 @Data@AllArgsConstructor@NoArgsConstructor
 public class OptionResDto {
@@ -22,8 +22,8 @@ public class OptionResDto {
         return new OptionResDto(product.getId(),product.getName());
     }
 
-    public static OptionResDto make(Category category) {
-        return new OptionResDto(category.getId(),category.getName());
+    public static OptionResDto make(ProductCompany productCompany) {
+        return new OptionResDto(productCompany.getId(),productCompany.getName());
     }
 
     public static OptionResDto make(Client client) {

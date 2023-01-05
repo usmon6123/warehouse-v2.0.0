@@ -1,5 +1,7 @@
 package uz.ataboyev.warehouse.payload;
 
-public interface OptionResIn {
+public interface ProductCompRes {
+    String getId();
     String getName();
+
 }

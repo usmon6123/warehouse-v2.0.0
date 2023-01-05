@@ -19,7 +19,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     List<OrderItem> findAllByOrder_ClientId(@Param("clientId") Long clientId);
 
     @Query(value = "select to_char(oi.created_at, 'dd-MM-yyyy')  as date, " +
-            "       c.name                                as categoryName, " +
+            "       pc.name                               as productCompanyName, " +
             "       p.name                                as productName, " +
             "       p.code                                as code, " +
             "       cast(oi.count as varchar)             as count, " +
@@ -30,7 +30,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "from order_item oi " +
             "         inner join product p " +
             "                    on oi.product_id = p.id " +
-            "         inner join category c on c.id = p.category_id " +
+            "         inner join product_company pc on pc.id = p.product_company_id " +
             "where oi.order_id = :orderId " +
             "order by oi.created_at desc", nativeQuery = true)
     List<OrderItemByOrderId> findAllByOrderId(Long orderId);

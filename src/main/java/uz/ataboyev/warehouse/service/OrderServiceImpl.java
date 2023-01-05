@@ -34,7 +34,6 @@ import static uz.ataboyev.warehouse.enums.PayTypeEnum.*;
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-    private final CategoryService categoryService;
     private final ProductService productService;
     private final ClientService clientService;
     private final OrderRepository orderRepository;
@@ -44,17 +43,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ApiResult<?> byOrder(Long whId, Long categoryId) {
 
-        List<OptionResDto> productResDtoList = productService.getProductsForOptionByCategoryId(categoryId);
-        List<OptionResDto> optionResDtoList = categoryService.getCategoryListForOption(whId);
-        List<OptionResDto> clientResDtoList = clientService.getClientsForOption();
-
-        OrderDTO result = new OrderDTO(
-                OptionDTO.makeOptionDTO(optionResDtoList),
-                OptionDTO.makeOptionDTO(productResDtoList),
-                OptionDTO.makeOptionDTO(clientResDtoList)
-        );
-
-        return ApiResult.successResponse(result);
+//        List<OptionResDto> productResDtoList = productService.getProductsForOptionByCategoryId(categoryId);
+//        List<OptionResDto> clientResDtoList = clientService.getClientsForOption();
+//
+//        OrderDTO result = new OrderDTO(
+//                OptionDTO.makeOptionDTO(null),
+//                OptionDTO.makeOptionDTO(productResDtoList),
+//                OptionDTO.makeOptionDTO(clientResDtoList)
+//        );
+//
+//        return ApiResult.successResponse(result);
+        return null;
     }
 
     @Override

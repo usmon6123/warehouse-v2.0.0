@@ -19,7 +19,7 @@ public class ProductResDtoByWhId {
     public static ProductResDtoByWhId makeDTO(ProductResDtoByWhIdImpl productImpl) {
         return new ProductResDtoByWhId(
                 Long.parseLong(productImpl.getProductId()),
-                productImpl.getCategoryName(),
+                productImpl.getProductCompanyName() ,
                 productImpl.getProductName(),
                 productImpl.getCode(),
                 productImpl.getCount()

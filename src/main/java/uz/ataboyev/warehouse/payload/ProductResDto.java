@@ -11,8 +11,6 @@ import uz.ataboyev.warehouse.entity.Product;
 public class ProductResDto {
     private Long id;
     private String name;
-    private String code;
-    private Long categoryId;
     private Double minCount;
     private Double count;
 
@@ -23,8 +21,6 @@ public class ProductResDto {
         return new ProductResDto(
                 product.getId(),
                 product.getName(),
-                product.getCode(),
-                product.getCategoryId(),
                 product.getMinCount(),
                 product.getCount()
         );

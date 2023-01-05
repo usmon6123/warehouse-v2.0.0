@@ -4,17 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.ataboyev.warehouse.entity.*;
-import uz.ataboyev.warehouse.enums.Type;
 import uz.ataboyev.warehouse.exception.RestException;
-import uz.ataboyev.warehouse.payload.clientDtos.ClientHistoryDto;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientOrderDto;
 import uz.ataboyev.warehouse.payload.clientDtos.OrderItemByOrderId;
 import uz.ataboyev.warehouse.repository.*;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,9 +18,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BaseService {
 
+    private final ProductCompanyRepository productCompanyRepository;
     private final OrderItemRepository orderItemRepository;
     private final WarehouseRepository warehouseRepository;
-    private final CategoryRepository categoryRepository;
     private final CompanyRepository companyRepository;
     private final ProductRepository productRepository;
     private final ClientRepository clientRepository;
@@ -72,10 +68,6 @@ public class BaseService {
         }
     }
 
-    public boolean checkCategoryById(Long categoryId) {
-        return categoryRepository.existsById(categoryId);
-    }
-
     public Product getProductByIdOrElseThrow(Long productId) {
         return productRepository.findById(productId).orElseThrow(() -> RestException.restThrow("so'ralayotgan Mahsulot bazada mavjudmas"));
     }
@@ -108,5 +100,14 @@ public class BaseService {
     public List<ClientOrderDto> getOrderItemListByOrderId(Long orderId) {
         List<OrderItemByOrderId> allByOrderId = orderItemRepository.findAllByOrderId(orderId);
         return allByOrderId.stream().map(ClientOrderDto::make).collect(Collectors.toList());
+    }
+
+    public ProductCompany getProdCompanyById(Long prodCompId) {
+        return productCompanyRepository.findById(prodCompId).orElseThrow(() -> RestException.notFound("Product Company not found"));
+    }
+
+    public boolean checkProductCompanyById(Long productCompanyId) {
+
+        return productCompanyRepository.existsById(productCompanyId);
     }
 }

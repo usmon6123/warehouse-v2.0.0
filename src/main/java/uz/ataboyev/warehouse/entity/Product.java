@@ -13,39 +13,35 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name", "code"})
+        @UniqueConstraint(columnNames = {"name", "product_company_id"})
 })
 public class Product extends AbsLongEntity {
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String code;
-
-    private Double minCount;//miqdor shundan kamysa sms jo'natadi
+    private Double minCount;//miqdor shundan kamaysa sms jo'natadi
 
     private Double count = 0D;//bazada qancha borligini bildiradi
 
 
     //----------------------------------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(insertable = false, updatable = false, name = "category_id")
-    private Category category;
+    @JoinColumn(insertable = false, updatable = false, name = "product_company_id")
+    private ProductCompany productCompany;
 
-    @Column(name = "category_id")
-    private Long categoryId;
+    @Column(name = "product_company_id")
+    private Long productCompanyId;
     //----------------------------------------------------------------------------
 
 
-    public Product(String name, String code, Long categoryId, Double minCount) {
+    public Product(String name, Long productCompanyId, Double minCount) {
         this.name = name;
-        this.code = code;
-        this.categoryId = categoryId;
+        this.productCompanyId = productCompanyId;
         this.minCount = minCount;
     }
 
     public static Product make(ProductReqDto productReqDto) {
-        return new Product(productReqDto.getName(), productReqDto.getCode(), productReqDto.getCategoryId(), productReqDto.getMinCount());
+        return new Product(productReqDto.getName(),productReqDto.getProductCompanyId(), productReqDto.getMinCount());
     }
 }

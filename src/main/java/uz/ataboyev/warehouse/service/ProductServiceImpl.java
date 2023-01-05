@@ -23,11 +23,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ApiResult<?> add(ProductReqDto productReqDto) {
 
-        //CATEGORIYA TEKSHIRILYABDI
-        if (!baseService.checkCategoryById(productReqDto.getCategoryId()))
-            throw RestException.restThrow("Mahsulotning kategoriyasi topilmadi", HttpStatus.NOT_FOUND);
+        //MAXSULOT FIRMASI TEKSHIRILYABDI
+        if (!baseService.checkProductCompanyById(productReqDto.getProductCompanyId()))
+            throw RestException.restThrow("Mahsulotning kompaniyasi topilmadi", HttpStatus.NOT_FOUND);
 
-        if (productRepository.existsByNameAndCode(productReqDto.getName(), productReqDto.getCode()))
+        if (productRepository.existsByName(productReqDto.getName()))
             throw RestException.restThrow("Bu mahsulot bizda mavjud", HttpStatus.CONFLICT);
 
         Product product = Product.make(productReqDto);
@@ -50,16 +50,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResDto> getAllProductsByCategoryId(Long categoryId) {
+    public List<ProductResDto> getAllProductsByPCId(Long pCId) {
 
-        List<Product> productList = productRepository.findAllByCategoryId(categoryId);
+        List<Product> productList = productRepository.findAllByProductCompanyId(pCId);
 
         return productList.stream().map(ProductResDto::makeDTO).collect(Collectors.toList());
     }
 
     @Override
-    public List<OptionResDto> getProductsForOptionByCategoryId(Long categoryId) {
-        List<OptionResIn> productList = productRepository.findDistinctByCategoryId(categoryId);
+    public List<OptionResDto> getProductsForOptionByPCId(Long pCId) {
+        List<OptionResIn> productList = productRepository.findDistinctByProductCompanyId(pCId);
         return productList.stream().map(OptionResDto::make).collect(Collectors.toList());
     }
 
@@ -97,13 +97,12 @@ public class ProductServiceImpl implements ProductService {
 
     private Product editProduct(Product oldProduct, ProductReqDto productReqDto) {
 
-        boolean check = productRepository.existsByNameAndCodeAndIdNot(productReqDto.getName(), productReqDto.getCode(), oldProduct.getId());
+        boolean check = productRepository.existsByNameAndIdNot(productReqDto.getName(), oldProduct.getId());
 
         if (check)throw RestException.restThrow("Bu nomli va kodli Mahsulot bazada oldindan mavjud");
 
         oldProduct.setMinCount(productReqDto.getMinCount());
         oldProduct.setName(productReqDto.getName());
-        oldProduct.setCode(productReqDto.getCode());
 
         return oldProduct;
     }

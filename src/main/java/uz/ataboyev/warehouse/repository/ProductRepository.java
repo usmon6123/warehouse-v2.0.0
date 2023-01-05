@@ -13,54 +13,57 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    boolean existsByCategoryId(Long categoryId);
+//    boolean existsByCategoryId(Long categoryId);
+//
+//    boolean existsByCategory_Name(String category_name);
 
-    boolean existsByCategory_Name(String category_name);
+    boolean existsByName(String name);
 
-    boolean existsByNameAndCode(String name, String code);
-
-    boolean existsByNameAndCodeAndIdNot(String name, String code, Long id);
+    boolean existsByNameAndIdNot(String name, Long id);
 
 
     Integer countByIdIn(Collection<Long> id);
 
 
-    List<Product> findAllByCategoryId(Long categoryId);
+    List<Product> findAllByProductCompanyId(Long pCId);
 
-    @Query(value = "select distinct p.name  from product p " +
-            "where p.category_id =:categoryId",nativeQuery = true)
-    List<OptionResIn> findDistinctByCategoryId(@Param("categoryId") Long categoryId);
+    @Query(value = "select distinct p.name " +
+            "from product p " +
+            "where p.product_company_id = :pCId",nativeQuery = true)
+    List<OptionResIn> findDistinctByProductCompanyId(@Param("pCId") Long pCId);
 
 
 
-    @Query(value = "select p.* from product p where p.category_id in (" +
-            "    select c.id from category c where c.warehouse_id = :whId)",
+    @Query(value = "select p.* " +
+            "from product p " +
+            "where p.product_company_id in (select pc.id from product_company pc where pc.wh_id = :whId)",
             nativeQuery = true)
     List<Product> findAllByWarehouseById(@Param("whId") Long whId);
 
 
-    @Query(value = "select " +
-            "cast (p.id as varchar) as productId, " +
-            "c.name as categoryName, " +
-            "p.name as productName, " +
-            "p.code as code, " +
-            "cast (p.count as varchar ) as count " +
+    @Query(value = "select cast(p.id as varchar)    as productId, " +
+            "       pc.name                  as productCompanyName, " +
+            "       p.name                   as productName, " +
+            "       cast(p.count as varchar) as count " +
             "from product p " +
-            "inner join category c on c.id = p.category_id" +
-            " where p.category_id in (" +
-            "        select c.id from category c where c.warehouse_id = :whId)" +
-            " order by p.updated_at desc ", nativeQuery = true)
+            "         inner join product_company pc on pc.id = p.product_company_id " +
+            "where p.product_company_id in ( " +
+            "    select pc.id " +
+            "    from product_company pc " +
+            "    where pc.wh_id = :whId) " +
+            "order by p.updated_at desc", nativeQuery = true)
     List<ProductResDtoByWhIdImpl> getProductByWarehouseId(@Param("whId") Long whId);
 
 
-    @Query(value = "select cast(p.id as varchar) as productId," +
-            "       c.name                as categoryName," +
-            "       p.name                as productName," +
-            "       p.code                as code," +
+    @Query(value = "select cast(p.id as varchar) as productId, " +
+            "       pc.name               as productCompanyName, " +
+            "       p.name                as productName, " +
             "       p.count               as count " +
             "from product p " +
-            "         inner join category c on c.id = p.category_id " +
-            "where c.warehouse_id = :whId and p.count<= p.min_count order by p.count ASC  ",
+            "         inner join product_company pc on pc.id = p.product_company_id " +
+            "where pc.wh_id = :whId " +
+            "  and p.count <= p.min_count " +
+            "order by p.count ASC  ",
             nativeQuery = true)
     List<ProductResDtoByWhIdImpl> getLittleProductByWarehouseId(@Param("whId") Long whId);
 
