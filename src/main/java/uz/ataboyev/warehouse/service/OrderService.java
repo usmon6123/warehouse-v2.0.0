@@ -13,7 +13,7 @@ public interface OrderService {
 
     ApiResult<?> getAllOrder();
 
-    List<CustomPage<OrderPageDTO>> getOrdersPageable(int page, int size,Long warehouseId);
+    CustomPage<OrderPageDTO> getOrdersPageable(int page, int size,Long warehouseId);
 
     OrderPriceDto generalPriceOrders(Long whId);
 

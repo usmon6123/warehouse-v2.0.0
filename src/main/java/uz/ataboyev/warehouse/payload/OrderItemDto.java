@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class    OrderItemDto {
+public class OrderItemDto {
 
     @NotNull(message = "productId_not_null")
     private Long productId;

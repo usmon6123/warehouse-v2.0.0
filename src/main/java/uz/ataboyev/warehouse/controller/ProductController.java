@@ -26,8 +26,6 @@ public interface ProductController {
     @GetMapping("/get-products-for-option-by-company-id/{pCId}")
     List<OptionResDto> getProductsForOption(@PathVariable Long pCId);
 
-    @GetMapping("get-codes-by-product-name/{productName}")
-    List<GetCodesForProductDto>getCodesForProduct(@PathVariable String productName);
 
     //MIN COUNTIDAN KAM QOLGAN MAXSULOTLAR RO'YHATINI CHIQARADI
     @GetMapping("get-little-products/{whId}")

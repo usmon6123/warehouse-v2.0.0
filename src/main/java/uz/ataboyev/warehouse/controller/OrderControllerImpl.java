@@ -36,8 +36,8 @@ public class OrderControllerImpl implements OrderController {
     }
 
     @Override
-    public List<CustomPage<OrderPageDTO>> getAllPageable(int page, int size,Long warehouseId) {
-        return orderService.getOrdersPageable(page, size,warehouseId);
+    public CustomPage<OrderPageDTO> getAllPageable(int page, int size,Long whId) {
+        return orderService.getOrdersPageable(page, size,whId);
     }
 
     @Override

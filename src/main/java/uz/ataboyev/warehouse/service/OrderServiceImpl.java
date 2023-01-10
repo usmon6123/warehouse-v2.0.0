@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static uz.ataboyev.warehouse.enums.CurrencyTypeEnum.SUM;
 import static uz.ataboyev.warehouse.enums.PayTypeEnum.*;
@@ -63,24 +62,23 @@ public class OrderServiceImpl implements OrderService {
         //warehouse id, product id va client idlarni haqiqatdan bazada mavjudligini soradi
         checkingOrderDTO(orderDTO);
 
+        //PRODUCTLARNI BAZADAGI SONLARINI O'ZGARTIRIB SAQLAB QO'YDI
+        String isGood = editProductCount(orderDTO.getOrderItemDtoList());
+        if (!isGood.equals("good")) return ApiResult.errorResponse(isGood);
+
         List<OrderItemDto> orderItemDtoList = orderDTO.getOrderItemDtoList();
 
         Order order = Order.make(orderDTO);
+        orderRepository.save(order);
 
-        Order order1 = saveOrder(order);
-
-        List<OrderItem> orderItemList = OrderItem.makeList(orderItemDtoList, order1.getId(), order1.getType());
-
-        //PRODUCTLARNI BAZADAGI SONLARINI O'ZGARTIRIB SAQLAB QO'YDI
-        String isGood = editProductCount(orderItemList);
-        if (!isGood.equals("good")) return ApiResult.errorResponse(isGood);
-
+        List<OrderItem> orderItems = makeOIList(orderDTO.getOrderItemDtoList(), order.getId());
         //SAVDODAGI BARCHA MAXSULOTLARNI NARHINI YIG'IBERADI SUM VA DOLLARNI ADDENNI QILIB
-        OrderPriceDto orderPriceDto = calculationOrderPrice(orderItemList);
+        OrderPriceDto orderPriceDto = calculationOrderPrice(orderItems);
+
 
         saveOrder(order, orderPriceDto);
 
-        orderItemListSaved(orderItemList);
+        orderItemListSaved(orderItems);
 
         return ApiResult.successResponse("savdo muvaffaqiyatli saqlandi");
     }
@@ -92,19 +90,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<CustomPage<OrderPageDTO>> getOrdersPageable(int page, int size, Long warehouseId) {
+    public CustomPage<OrderPageDTO> getOrdersPageable(int page, int size, Long warehouseId) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
         Page<Order> orderPage = orderRepository.findAllByWarehouseIdOrderByUpdatedAtDesc(warehouseId, pageable);
-        CustomPage<OrderPageDTO> orderPageDTOCustomPage = orderPageDTOCustomPage(orderPage);
-        return List.of(orderPageDTOCustomPage);
+        return orderPageDTOCustomPage(orderPage);
     }
 
     @Override
     public OrderPriceDto generalPriceOrders(Long whId) {
+        double sum, dollar;
 
-        Double sum, dollar;
-
+        //todo mukammal emas yangicha ajoyib query yozish kerak bo'lyapdi
         OrderPriceDtoForRep orderPriceDtoForRep = orderRepository.orderPriceByWhId(whId);
+
         dollar = orderPriceDtoForRep.getDollar() == null ? 0D : Double.parseDouble(orderPriceDtoForRep.getDollar());
         sum = orderPriceDtoForRep.getSum() == null ? 0D : Double.parseDouble(orderPriceDtoForRep.getSum());
         return OrderPriceDto.make(sum, dollar);
@@ -130,11 +128,6 @@ public class OrderServiceImpl implements OrderService {
         HashMap<PayTypeEnum, HashMap<String, Double>> hashMap = new HashMap<>();
 
         List<OrderPriceForPayType> allPriceByType = orderItemRepository.getAllPriceByType(whId);
-//        List<OrderPriceDtoForPayType> orderPriceByType = allPriceByType.stream().map(OrderPriceDtoForPayType::make).collect(Collectors.toList());
-//        for (OrderPriceDtoForPayType forPayType : orderPriceByType) {
-//            if (forPayType.getType().equals(SUM))allSum+=forPayType.getPrice();
-//            else allDollar+=forPayType.getPrice();
-//        }
 
 
         HashMap<String, Double> mapCASH = new HashMap<>();
@@ -237,7 +230,46 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-//    --------------------------------- HELPER METHOD -----------------------------------------
+    //    --------------------------------- HELPER METHOD -----------------------------------------
+
+    private List<OrderItem> makeOIList(List<OrderItemDto> orderItemDtoList, Long orderId) {
+        ArrayList<OrderItem> orderItems = new ArrayList<>();
+        System.out.println(orderId);
+        double count = 0d, amount = 0d, mainPrise = 0d, helperCount = 0d;
+        for (OrderItemDto orderItemDto : orderItemDtoList) {
+            count = orderItemDto.getCount();
+            helperCount = count;
+            amount = orderItemDto.getAmount();
+            if (count > 0) {
+                mainPrise += amount * count;
+            } else {
+                while (helperCount <= 0) { //helperCount - qiymatni olganda bu yo'lga kiradi
+
+                    //bu bazadan kelgan order item clientdan kelgani emas ehtiyot bo'l.
+                    //buni helper countini minus qiladi
+
+                    OrderItem dtbOrderItem = orderItemRepository.getFIFOOrderItem(orderItemDto.getProductId()).orElseThrow(() -> RestException.restThrow("Omborda mahsulot yetarli emas"));
+                    Double oldCount = dtbOrderItem.getHelperCount();
+                    double d = oldCount + helperCount;
+                    if (d > 0) {//birinchi bazadan gagan orderItemni helperCountini o'zi yetsa ex: d = 8+(-4)
+                        mainPrise += dtbOrderItem.getAmount() * helperCount;
+                        dtbOrderItem.setHelperCount(d);
+                        orderItemRepository.save(dtbOrderItem);
+                        break;
+                    } else { //d<0 ex: 8 + (-10)
+                        mainPrise += dtbOrderItem.getAmount() * (-1) * dtbOrderItem.getHelperCount();
+                        dtbOrderItem.setHelperCount(0d);
+                        orderItemRepository.save(dtbOrderItem);
+                        helperCount = d;
+                    }
+
+                }
+            }
+            orderItems.add(OrderItem.make(orderItemDto, orderId, mainPrise));
+            mainPrise = 0d;
+        }
+        return orderItems;
+    }
 
     private CustomPage<OrderPageDTO> orderPageDTOCustomPage(Page<Order> orderPage) {
 
@@ -256,8 +288,7 @@ public class OrderServiceImpl implements OrderService {
                     date,
                     clientDto,
                     order.getOrderPriceSum(),
-                    order.getOrderPriceDollar(),
-                    order.getType()));
+                    order.getOrderPriceDollar()));
         }
 
         return new CustomPage<>(
@@ -270,16 +301,16 @@ public class OrderServiceImpl implements OrderService {
         );
     }
 
-    private String editProductCount(List<OrderItem> orderItemList) {
+    private String editProductCount(List<OrderItemDto> orderItemList) {
 
-        double a = 1D, databaseCount;
+        double databaseCount;
         ArrayList<Product> productList = new ArrayList<>();
 
-        for (OrderItem orderItem : orderItemList) {
+        for (OrderItemDto orderItem : orderItemList) {
 
             Product product = baseService.getProductByIdOrElseThrow(orderItem.getProductId());
 
-            databaseCount = product.getCount() + a * orderItem.getCount();
+            databaseCount = product.getCount() + orderItem.getCount();
 
             //HARIDOR OLMOQCHI BO'LGAN MIQDORDA BAZADA MAHSULOT BORLIGINI TEKSHIRADI
             if (databaseCount < 0)

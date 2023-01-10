@@ -8,20 +8,15 @@ import lombok.NoArgsConstructor;
 public class ProductResDtoByWhId {
 
     private Long productId;
-    private String categoryName;
+    private String productCompany;
     private String productName;
-    private String code;
     private String count;
-
-
-
 
     public static ProductResDtoByWhId makeDTO(ProductResDtoByWhIdImpl productImpl) {
         return new ProductResDtoByWhId(
                 Long.parseLong(productImpl.getProductId()),
                 productImpl.getProductCompanyName() ,
                 productImpl.getProductName(),
-                productImpl.getCode(),
                 productImpl.getCount()
         );
     }

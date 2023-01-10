@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import uz.ataboyev.warehouse.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
-import uz.ataboyev.warehouse.payload.GetCodesForProduct;
 import uz.ataboyev.warehouse.payload.OptionResIn;
 import uz.ataboyev.warehouse.payload.ProductResDtoByWhIdImpl;
 
@@ -51,7 +50,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "    select pc.id " +
             "    from product_company pc " +
             "    where pc.wh_id = :whId) " +
-            "order by p.updated_at desc", nativeQuery = true)
+            "order by pc.name, p.created_at asc ", nativeQuery = true)
     List<ProductResDtoByWhIdImpl> getProductByWarehouseId(@Param("whId") Long whId);
 
 
@@ -68,7 +67,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<ProductResDtoByWhIdImpl> getLittleProductByWarehouseId(@Param("whId") Long whId);
 
 
-    @Query(value = "select cast (p.id as varchar )as id,p.code as code from product p where p.name = :name order by p.code ASC", nativeQuery = true)
-    List<GetCodesForProduct> getCodesForProduct(@Param("name") String name);
+//    @Query(value = "select cast (p.id as varchar )as id,p.code as code from product p where p.name = :name order by p.code ASC", nativeQuery = true)
+//    List<GetCodesForProduct> getCodesForProduct(@Param("name") String name);
 
 }

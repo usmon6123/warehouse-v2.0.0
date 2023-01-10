@@ -14,8 +14,12 @@ public class ProductCompanyResDto {
     private Long id;
     private String name;
 
+    public ProductCompanyResDto(String name) {
+        this.name = name;
+    }
 
     public static ProductCompanyResDto make(ProductCompany productCompany) {
         return new ProductCompanyResDto(productCompany.getId(),productCompany.getName());
     }
+
 }

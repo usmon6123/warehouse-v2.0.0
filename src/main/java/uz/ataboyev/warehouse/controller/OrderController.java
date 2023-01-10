@@ -16,7 +16,7 @@ public interface OrderController {
 
     String ORDER_CONTROLLER = RestConstant.BASE_PATH + "/order";
 
-
+    //BU YO'L ISHLATILMADI
     @GetMapping("/by-order/{whId}/{categoryId}")
     ApiResult<?> byOrder(@PathVariable Long whId, @PathVariable Long categoryId);
 
@@ -30,10 +30,10 @@ public interface OrderController {
     @GetMapping("/get-all-order")
     ApiResult<?> getAllOrder();//BU YO'L YOZILMAGAN
 
-    @GetMapping("get-all-orders-pageable/{warehouseId}")
-    List<CustomPage<OrderPageDTO>> getAllPageable(@RequestParam(defaultValue = DEFAULT_PAGE_NUMBER) int page,
+    @GetMapping("get-all-orders-pageable/{whId}")
+    CustomPage<OrderPageDTO> getAllPageable(@RequestParam(defaultValue = DEFAULT_PAGE_NUMBER) int page,
                                                   @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size,
-                                                  @PathVariable Long warehouseId);
+                                                  @PathVariable Long whId);
 
     @GetMapping("general-price-orders/{whId}")
     OrderPriceDto generalPriceOrders(@PathVariable Long whId);

@@ -80,12 +80,7 @@ public class ProductServiceImpl implements ProductService {
         return products.stream().map(ProductResDtoByWhId::makeDTO).collect(Collectors.toList());
     }
 
-    //PRODUCTNI NOMINI BERIB YUBORISH ORQALI SHU NOMLI PRODUCTLARNING CODELARINI OLIB KELADI
-    @Override
-    public List<GetCodesForProductDto> getCodesForProduct(String productName) {
-        List<GetCodesForProduct> productCodes = productRepository.getCodesForProduct(productName);
-        return productCodes.stream().map(GetCodesForProductDto::make).collect(Collectors.toList());
-    }
+
 
     @Override
     public ApiResult<?> edit(Long productId, ProductReqDto productReqDto) {

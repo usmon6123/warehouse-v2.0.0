@@ -20,7 +20,6 @@ public class OrderPageDTO {
    private ClientDtoForPageable clientDto;
    private Double orderPriceSum;
    private Double orderPriceDollar;
-   private OrderType type;
 
 
 

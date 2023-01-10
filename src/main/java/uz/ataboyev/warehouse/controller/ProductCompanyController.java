@@ -20,9 +20,11 @@ public interface ProductCompanyController {
     @GetMapping("/get-one/{prodCompId}")
     ApiResult<?> getOne(@PathVariable Long prodCompId);
 
+    //BARCHA MAXSULOT FIRMALARINI ID VA NAMELARINI OLIBERADI
     @GetMapping("/get-all/{whId}")
-    ApiResult<?> getAll(@PathVariable Long whId);
+    List<OptionResDto> getAll(@PathVariable Long whId);
 
+    //BARCHA MAXSULOT FIRMALARINI NAMELARINI OLIBERADI
     @GetMapping("/get-all-for-option/{whId}")
     List<OptionResDto> getAllForOption(@PathVariable Long whId);
 

@@ -10,7 +10,6 @@ public interface ProductResDtoByWhIdImpl {
     String getProductId();
     String getProductCompanyName();
     String getProductName();
-    String getCode();
     String getCount();
 
 

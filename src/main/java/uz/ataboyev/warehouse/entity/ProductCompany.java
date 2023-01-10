@@ -48,4 +48,8 @@ public class ProductCompany extends AbsLongEntity {
         }
         return null;
     }
+
+    public static void edit(ProductCompany prodCompany, ProductCompanyReqDto productCompanyReqDto) {
+        prodCompany.setName(productCompanyReqDto.getName());
+    }
 }

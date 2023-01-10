@@ -39,11 +39,6 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public List<GetCodesForProductDto> getCodesForProduct(String productName) {
-        return productService.getCodesForProduct(productName);
-    }
-
-    @Override
     public List<ProductResDtoByWhId> littleProductsByWarehouseId(Long whId) {
         return productService.littleProductsByWarehouseId(whId);
     }

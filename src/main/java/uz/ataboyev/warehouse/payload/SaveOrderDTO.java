@@ -22,9 +22,6 @@ public class SaveOrderDTO {
     @NotNull(message = "order_items_not_null")
     private List<OrderItemDto> orderItemDtoList;
 
-    @NotNull(message = "order_type_not_null")
-    private OrderType orderType;
-
     @NotNull(message = "clientId_not_null")
     private Long clientId;
 

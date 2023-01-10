@@ -25,9 +25,6 @@ public class Order extends AbsLongEntity {
     private Long clientId;
 //------------------------------------------------------------------------------
 
-    @Enumerated(EnumType.STRING)
-    private OrderType type;
-
     @Column(columnDefinition = "text")
     private String description = " ";
 
@@ -49,9 +46,8 @@ public class Order extends AbsLongEntity {
 //------------------------------------------------------------------------------
 
 
-    public Order(Long clientId, OrderType type, String description, Long warehouseId) {
+    public Order(Long clientId, String description, Long warehouseId) {
         this.clientId = clientId;
-        this.type = type;
         this.description = description;
         this.warehouseId = warehouseId;
     }
@@ -60,7 +56,6 @@ public class Order extends AbsLongEntity {
 
         return new Order(
                 orderDTO.getClientId(),
-                orderDTO.getOrderType(),
                 orderDTO.getDescription(),
                 orderDTO.getWarehouseId()
         );

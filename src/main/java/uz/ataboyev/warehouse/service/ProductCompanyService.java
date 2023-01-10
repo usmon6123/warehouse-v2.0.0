@@ -15,7 +15,7 @@ public interface ProductCompanyService {
 
     ApiResult<?> getOne(Long prodCompId);
 
-    ApiResult<?> getAll(Long whId);
+    List<OptionResDto> getAll(Long whId);
 
     List<OptionResDto> getAllForOption(Long whId);
 

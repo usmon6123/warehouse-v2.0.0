@@ -22,7 +22,5 @@ public interface ProductService {
 
     List<ProductResDtoByWhId> getAllProductByWarehouseId(Long warehouseId);
 
-    List<GetCodesForProductDto> getCodesForProduct(String productName);
-
     List<ProductResDtoByWhId> littleProductsByWarehouseId(Long whId);
 }

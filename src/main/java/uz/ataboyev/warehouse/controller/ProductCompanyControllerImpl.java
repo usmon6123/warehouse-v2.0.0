@@ -27,7 +27,7 @@ public class ProductCompanyControllerImpl implements ProductCompanyController {
     }
 
     @Override
-    public ApiResult<?> getAll(Long whId) {
+    public List<OptionResDto> getAll(Long whId) {
         return productCompanyService.getAll(whId);
     }
 
