@@ -16,6 +16,8 @@ public interface ClientRepository extends JpaRepository<Client,Long> {
     boolean existsByPhoneNumberAndIdNot(String phoneNumber, Long id);
 
     boolean existsById(Long id);
+    @Query(value = "select * from client c where c.id = :workerId and c.client_type = 'WORKER'",nativeQuery = true)
+    Optional<Client> getWorkerById(@Param("workerId") Long workerId);
 
 
 
@@ -32,6 +34,7 @@ public interface ClientRepository extends JpaRepository<Client,Long> {
 
 
     Optional<Client> findByClientType(Type clientType);
+    List<Client> findAllByClientType(Type clientType);
 
 //    @SqlResultSetMapping(name = "mapClientHistoryDto",
 //            classes = @ConstructorResult(targetClass = ClientHistoryDto.class,columns = )

@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.ataboyev.warehouse.entity.*;
+import uz.ataboyev.warehouse.enums.Type;
 import uz.ataboyev.warehouse.exception.RestException;
+import uz.ataboyev.warehouse.payload.OneWorkerSalary;
+import uz.ataboyev.warehouse.payload.OneWorkerSalaryDto;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientOrderDto;
 import uz.ataboyev.warehouse.payload.clientDtos.OrderItemByOrderId;
 import uz.ataboyev.warehouse.repository.*;
@@ -62,6 +65,10 @@ public class BaseService {
         return clientRepository.existsById(clientId);
     }
 
+    public Client getWorkerById(Long workerId) {
+        return clientRepository.getWorkerById(workerId).orElseThrow(() -> RestException.restThrow("Ishchi topilmadi"));
+    }
+
     public void checkOrdersOfClient(Long clientId) {
         if (orderRepository.existsByClientId(clientId)) {
             throw RestException.restThrow("Bu mijozni o'chira olmaysiz, uning oldi berdilari bo'lgan ekan siz bn", HttpStatus.CONFLICT);
@@ -82,7 +89,7 @@ public class BaseService {
     }
 
 
-    public String timestampToString_dd_MM_yyyy(Timestamp date) {
+    public static String timestampToString_dd_MM_yyyy(Timestamp date) {
         return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
@@ -91,7 +98,7 @@ public class BaseService {
             //todo dabdala bo'lyatr sho'ri, lekin zarari deymadi hech yerda :)
 //            Client client = clientRepository.findByClientType(Type.BOSS).orElse(new Client(Type.OTHER,"TEST MIJOZ","*******"));
             return 0l;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return 0L;
         }
@@ -111,4 +118,19 @@ public class BaseService {
         return productCompanyRepository.existsById(productCompanyId);
     }
 
+    public static OneWorkerSalaryDto OneWorkerSalaryToDTO(OneWorkerSalary oneWorkerSalary) {
+
+        String date = timestampToString_dd_MM_yyyy(Timestamp.valueOf(oneWorkerSalary.getDate()));
+
+        return new OneWorkerSalaryDto(
+                date,
+                oneWorkerSalary.getDescription(),
+                oneWorkerSalary.getSum(),
+                oneWorkerSalary.getType()
+        );
+    }
+
+    public List<Client> getWorkers() {
+        return clientRepository.findAllByClientType(Type.WORKER);
+    }
 }
