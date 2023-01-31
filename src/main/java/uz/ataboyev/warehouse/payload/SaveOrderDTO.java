@@ -19,6 +19,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SaveOrderDTO {
 
+    private OrderType orderType;
+
     @NotNull(message = "order_items_not_null")
     private List<OrderItemDto> orderItemDtoList;
 

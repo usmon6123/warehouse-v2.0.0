@@ -92,7 +92,6 @@ public class BaseService {
     public static String timestampToString_dd_MM_yyyy(Timestamp date) {
         return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
-
     public Long getBossId() {
         try {
             //todo dabdala bo'lyatr sho'ri, lekin zarari deymadi hech yerda :)

@@ -13,26 +13,29 @@ public class WorkersTotalSalaryResDto {
 
     private Long workerId;
     private String workerName;
-    private Double totalSum;
     private Double totalDollar;
+    private Double totalSum;
 
 
     public static WorkersTotalSalaryResDto make(GetAllWorkersTotalSalaries workerTotalSalaries) {
         try {
-            double totalSum = 0d, totalDollar = 0d;
-            Long workerId = Long.parseLong(workerTotalSalaries.getWorkerId());
-            if (workerTotalSalaries.getCurrencyType().equals(CurrencyTypeEnum.SUM.toString()))
-                totalSum = Double.parseDouble(workerTotalSalaries.getPrice());
-            else if (workerTotalSalaries.getCurrencyType().equals(CurrencyTypeEnum.DOLLAR.toString()))
-                totalDollar = Double.parseDouble(workerTotalSalaries.getPrice());
-            return new WorkersTotalSalaryResDto(
-                    workerId,
-                    workerTotalSalaries.getWorkerName(),
-                    totalSum,
-                    totalDollar
-            );
+           return new WorkersTotalSalaryResDto(
+                   Long.parseLong(workerTotalSalaries.getWorkerId()),
+                   workerTotalSalaries.getWorkerName(),
+                   parseStringToDouble(workerTotalSalaries.getTotalDollar()),
+                   parseStringToDouble(workerTotalSalaries.getTotalSum())
+           );
         } catch (Exception e) {
             throw RestException.restThrow("Xatolik yuz berdi");
         }
+    }
+
+    private static Double parseStringToDouble(String price) {
+       try {
+           return Double.parseDouble(price);
+       }catch (Exception e){
+           return 0d;
+       }
+
     }
 }

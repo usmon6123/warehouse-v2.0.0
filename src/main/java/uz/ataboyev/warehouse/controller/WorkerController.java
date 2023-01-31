@@ -24,9 +24,9 @@ public interface WorkerController {
                                            @RequestParam (defaultValue = DEFAULT_END_DATE) Long endDate,
                                            @PathVariable Long workerId);
 
-//    @GetMapping("/get-all")
-//    List<WorkerHistorySalaryResDto> getAllWorkersHistorySalary(@RequestParam (defaultValue = DEFAULT_START_DATE)Long startDate,
-//                                                               @RequestParam (defaultValue = DEFAULT_END_DATE) Long endDate);
+    @GetMapping("/get-all")
+    List<WorkerHistorySalaryResDto> getAllWorkersHistorySalary(@RequestParam (defaultValue = DEFAULT_START_DATE)Long startDate,
+                                                               @RequestParam (defaultValue = DEFAULT_END_DATE) Long endDate);
 
     @GetMapping("/get-all-balance-salary")
     List<WorkersTotalSalaryResDto> getAllBalanceSalary(@RequestParam (defaultValue = DEFAULT_START_DATE)Long startDate,

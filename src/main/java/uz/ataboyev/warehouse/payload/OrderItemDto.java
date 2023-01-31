@@ -23,9 +23,9 @@ public class OrderItemDto {
     private Double amount; //dona summasi
 
     @NotNull(message = "currencyTypeEnum_not_null")
-    private CurrencyTypeEnum currencyTypeEnum;
+    private CurrencyTypeEnum currencyTypeEnum = CurrencyTypeEnum.DOLLAR;
 
     @NotNull(message = "pay_type_enum_not_null")
-    private PayTypeEnum payTypeEnum;
+    private PayTypeEnum payTypeEnum = PayTypeEnum.DEFAULT;
 
 }

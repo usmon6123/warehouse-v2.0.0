@@ -7,16 +7,10 @@ import uz.ataboyev.warehouse.entity.WorkerSalary;
 import uz.ataboyev.warehouse.payload.*;
 import uz.ataboyev.warehouse.repository.WorkerSalaryRepository;
 import uz.ataboyev.warehouse.service.base.BaseService;
-import uz.ataboyev.warehouse.utils.AppConstant;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static uz.ataboyev.warehouse.utils.AppConstant.DEFAULT_END_DATE;
-import static uz.ataboyev.warehouse.utils.AppConstant.DEFAULT_START_DATE;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +31,7 @@ public class WorkerServiceImpl implements WorkerService {
     public WorkerSalaryResDto workerHistorySalary(Long startDateTime,
                                                   Long endDateTime,
                                                   Long workerId) {
+
         Timestamp startDate = new Timestamp(startDateTime);
         Timestamp endDate = new Timestamp(endDateTime);
 
@@ -49,19 +44,18 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
-    public List<WorkerHistorySalaryResDto> getAllWorkersHistorySalary(Timestamp startDate, Timestamp endDate) {
-        return null;
+    public List<WorkerHistorySalaryResDto> getAllWorkersHistorySalary(Long startDate, Long endDate) {
+        List<WorkerHistorySalary> workersSalaries = workerSalaryRepository.getWorkerSalaries(longToTimestamp(startDate), longToTimestamp(endDate));
+        return workersSalaries.stream().map(WorkerHistorySalaryResDto::make).collect(Collectors.toList());
     }
 
     @Override
     public List<WorkersTotalSalaryResDto> getAllBalanceSalary(Long startDate, Long endDate) {
-
-        List<GetAllWorkersTotalSalaries> allWorkersTotalSalaries = workerSalaryRepository.getAllWorkersTotalSalaries();
-
+        List<GetAllWorkersTotalSalaries> allWorkersTotalSalaries = workerSalaryRepository.getAllWorkersTotalSalaries(longToTimestamp(startDate), longToTimestamp(endDate));
         return allWorkersTotalSalaries.stream().map(WorkersTotalSalaryResDto::make).collect(Collectors.toList());
     }
 
-    private Timestamp generateLongToTimestamp(Long longDate) {
+    private Timestamp longToTimestamp(Long longDate) {
         return new Timestamp(longDate);
 
 

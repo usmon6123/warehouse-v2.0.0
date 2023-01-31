@@ -16,6 +16,9 @@ import java.util.List;
 @Entity(name = "orders")
 public class Order extends AbsLongEntity {
 
+    @Enumerated(EnumType.STRING)
+    private OrderType orderType;
+
     //------------------------------------------------------------------------------
     @JoinColumn(updatable = false, insertable = false, name = "client_id")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -46,7 +49,10 @@ public class Order extends AbsLongEntity {
 //------------------------------------------------------------------------------
 
 
-    public Order(Long clientId, String description, Long warehouseId) {
+
+
+    public Order(OrderType orderType, Long clientId, String description, Long warehouseId) {
+        this.orderType = orderType;
         this.clientId = clientId;
         this.description = description;
         this.warehouseId = warehouseId;
@@ -55,6 +61,7 @@ public class Order extends AbsLongEntity {
     public static Order make(SaveOrderDTO orderDTO) {
 
         return new Order(
+                orderDTO.getOrderType(),
                 orderDTO.getClientId(),
                 orderDTO.getDescription(),
                 orderDTO.getWarehouseId()

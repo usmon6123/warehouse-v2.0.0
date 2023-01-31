@@ -5,5 +5,6 @@ public enum PayTypeEnum {
     TRANSFER, //hisobga pul o'tkazish
     CARD, //plastik karta
     DEBT, //qarz
-    BOSS; //ho'jayinni o'zi savdo qilganda
+    BOSS, //ho'jayinni o'zi savdo qilganda
+    DEFAULT;
 }

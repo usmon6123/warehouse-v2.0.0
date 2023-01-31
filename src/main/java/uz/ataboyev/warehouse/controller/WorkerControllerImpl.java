@@ -25,10 +25,10 @@ public class WorkerControllerImpl implements WorkerController {
         return workerService.workerHistorySalary(startDate,endDate,workerId);
     }
 
-//    @Override
-//    public List<WorkerHistorySalaryResDto> getAllWorkersHistorySalary(Timestamp startDate, Timestamp endDate) {
-//        return workerService.getAllWorkersHistorySalary(startDate,endDate);
-//    }
+    @Override
+    public List<WorkerHistorySalaryResDto> getAllWorkersHistorySalary(Long startDate, Long endDate) {
+        return workerService.getAllWorkersHistorySalary(startDate,endDate);
+    }
 
     @Override
     public List<WorkersTotalSalaryResDto> getAllBalanceSalary(Long startDate, Long endDate) {

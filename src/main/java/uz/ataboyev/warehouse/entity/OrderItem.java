@@ -3,11 +3,11 @@ package uz.ataboyev.warehouse.entity;
 import lombok.*;
 import uz.ataboyev.warehouse.entity.template.AbsLongEntity;
 import uz.ataboyev.warehouse.enums.CurrencyTypeEnum;
+import uz.ataboyev.warehouse.enums.OrderType;
 import uz.ataboyev.warehouse.enums.PayTypeEnum;
 import uz.ataboyev.warehouse.payload.OrderItemDto;
 
 import javax.persistence.*;
-import java.util.List;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -58,7 +58,7 @@ public class OrderItem extends AbsLongEntity {
     @Enumerated(EnumType.STRING)
     private PayTypeEnum payTypeEnum;//to'lov turi
 
-    private Double mainPrice;
+    private Double mainPrice; //mahsulotning tannarxi kirim bo'lganda amount*count ga teng bo'lsa, chiqimda esa sonini sotish narxiga emas bazadagi kirim narxiga hisoblab ko'paytiradi
 
 
     public OrderItem(Long orderId, Long productId, Double count, CurrencyTypeEnum currencyType, Double amount, PayTypeEnum payTypeEnum) {
@@ -91,24 +91,22 @@ public class OrderItem extends AbsLongEntity {
         this.payTypeEnum = payTypeEnum;
     }
 
-    public static List<OrderItem> makeList(List<OrderItemDto> orderItemDtoList, Long orderId) {
 
-//        return orderItemDtoList.stream().map(orderItemDto -> make(orderItemDto, orderId))
-//                .collect(Collectors.toList());
-        return null;
-
-    }
-
-    public static OrderItem make(OrderItemDto orderItemDto, Long orderId, Double mainPrice) {
-
+    public static OrderItem make(OrderItemDto orderItemDto, Order order, Double mainPrice) {
+        CurrencyTypeEnum type = orderItemDto.getCurrencyTypeEnum();
+        PayTypeEnum payTypeEnum = orderItemDto.getPayTypeEnum();
+        if ( order.getOrderType().equals(OrderType.INCOME)){
+            type = CurrencyTypeEnum.DOLLAR;
+            payTypeEnum=PayTypeEnum.DEFAULT;
+        }
         return new OrderItem(
-                orderId,
+                order.getId(),
                 orderItemDto.getProductId(),
                 orderItemDto.getCount(),
                 orderItemDto.getCount() > 0 ? orderItemDto.getCount() : 0d,
-                orderItemDto.getCurrencyTypeEnum(),
+                type,
                 orderItemDto.getAmount(),//dona summasi
-                orderItemDto.getPayTypeEnum(),
+                payTypeEnum,
                 mainPrice
         );
     }

@@ -11,7 +11,7 @@ public interface WorkerService {
 
     WorkerSalaryResDto workerHistorySalary(Long startDate, Long endDate, Long workerId);
 
-    List<WorkerHistorySalaryResDto> getAllWorkersHistorySalary(Timestamp startDate, Timestamp endDate);
+    List<WorkerHistorySalaryResDto> getAllWorkersHistorySalary(Long startDate, Long endDate);
 
     List<WorkersTotalSalaryResDto> getAllBalanceSalary(Long startDate, Long endDate);
 
