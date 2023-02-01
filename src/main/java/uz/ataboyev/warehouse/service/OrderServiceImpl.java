@@ -62,24 +62,26 @@ public class OrderServiceImpl implements OrderService {
 
         //warehouse id, product id va client idlarni haqiqatdan bazada mavjudligini soradi
         checkingOrderDTO(orderDTO);
+
         //chiqim bo'lganda bazadan minus qilish uchun kerak bo'ladi
         double d = -1;
 
         //agar kirim bo'lsa
-        if (orderDTO.getOrderType().equals(OrderType.INCOME)){
-            d=1;
+        if (orderDTO.getOrderType().equals(OrderType.INCOME)) {
+            d = 1;
         }
 
         //PRODUCTLARNI BAZADAGI SONLARINI O'ZGARTIRIB SAQLAB QO'YDI
-        String isGood = editProductCount(orderDTO.getOrderItemDtoList(),d);
+        String isGood = editProductCount(orderDTO.getOrderItemDtoList(), d);
         if (!isGood.equals("good")) return ApiResult.errorResponse(isGood);
 
 //        List<OrderItemDto> orderItemDtoList = orderDTO.getOrderItemDtoList();
 
         Order order = Order.make(orderDTO);
+
         orderRepository.save(order);
 
-        List<OrderItem> orderItems = makeOIList(orderDTO.getOrderItemDtoList(), order,d);
+        List<OrderItem> orderItems = makeOIList(orderDTO.getOrderItemDtoList(), order, d);
 
         //SAVDODAGI BARCHA MAXSULOTLARNI NARHINI YIG'IBERADI SUM VA DOLLARNI ADDENNI QILIB
         OrderPriceDto orderPriceDto = calculationOrderPrice(orderItems);
@@ -247,41 +249,46 @@ public class OrderServiceImpl implements OrderService {
         double count = 0d, amount = 0d, helperCount = 0d,
 
                 //bu oldi berdidagi barcha mahsulotlarning umumiy tannarxi
-                mainPrise = 0d;
+                originalMainPrise = 0d;
 
         for (OrderItemDto orderItemDto : orderItemDtoList) {
-            orderItemDto.setCount(di*Math.abs(orderItemDto.getCount()));
+
+            //chiqimda di=-1;
+            //shunchaki mijoz chiqmda minus o'ziqo'shib yozib yuborsa to'g'irlash uchun
+            orderItemDto.setCount(di * Math.abs(orderItemDto.getCount()));
+
             count = orderItemDto.getCount();
             helperCount = count;
             amount = orderItemDto.getAmount();
 
             //YANI MAXSULOT BAZAGA KIRAYOTGAN BO'LSA ASOSIY NARXINI DONA SUMMASINI KELGAN BAXOSIGA KO'PAYTIRISH ORQALI HAL QILIB QO'YA QOLAMIZ
             if (count > 0) {
-                mainPrise += amount * count;
+                originalMainPrise += amount * count;
+            }
             //OMBORDAN MAXSULOT CHIQIB KETAYOTGAN PAYTI BIZ SOTILAYOTGAN NARXI BO'YICHA EMAS BALKI OMBORGA KELGAN VAQTIDAGI SUMMASI BO'YICHA MINUS QILIB QO'YAMIZ FIFO QOIDASI BO'YICHA bu yo'l orqali
-            } else {
+            else {
                 while (helperCount <= 0) { //helperCount - qiymatni olganda bu yo'lga kiradi
 
                     //bu bazadan kelgan order item clientdan kelgani emas ehtiyot bo'l.
-                    //buni helper countini minus qiladi
+                    //buni helper countini minus qiladi BU OLINAYOTGAN ORDERiTEM
                     OrderItem dtbOrderItem = orderItemRepository.getFIFOOrderItem(orderItemDto.getProductId()).orElseThrow(() -> RestException.restThrow("Omborda mahsulot yetarli emas"));
                     Double oldCount = dtbOrderItem.getHelperCount();
                     double l = oldCount + helperCount;
                     if (l > 0) {//birinchi bazadan gagan orderItemni helperCountini o'zi yetsa ex: l = 8+(-4)=4
-                        mainPrise += dtbOrderItem.getAmount() * helperCount;
+                        originalMainPrise += dtbOrderItem.getAmount() * helperCount;
                         dtbOrderItem.setHelperCount(l);
                         orderItemRepository.save(dtbOrderItem);
                         break;
                     } else { //l<0 ex: 8 + (-10)
-                        mainPrise += dtbOrderItem.getAmount() * (-1) * dtbOrderItem.getHelperCount();
+                        originalMainPrise += dtbOrderItem.getAmount() * (-1) * dtbOrderItem.getHelperCount();
                         dtbOrderItem.setHelperCount(0d);
                         orderItemRepository.save(dtbOrderItem);
                         helperCount = l;//8+ -10 = -2
                     }
                 }
             }
-            orderItems.add(OrderItem.make(orderItemDto, order, mainPrise));
-            mainPrise = 0d;
+            orderItems.add(OrderItem.make(orderItemDto, order, originalMainPrise));
+            originalMainPrise = 0d;
         }
         return orderItems;
     }
@@ -325,7 +332,7 @@ public class OrderServiceImpl implements OrderService {
 
             Product product = baseService.getProductByIdOrElseThrow(orderItem.getProductId());
 
-            databaseCount = product.getCount() + d*Math.abs(orderItem.getCount());
+            databaseCount = product.getCount() + d * Math.abs(orderItem.getCount());
 
             //HARIDOR OLMOQCHI BO'LGAN MIQDORDA BAZADA MAHSULOT BORLIGINI TEKSHIRADI
             if (databaseCount < 0)

@@ -3,6 +3,7 @@ package uz.ataboyev.warehouse.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import uz.ataboyev.warehouse.entity.Company;
 import uz.ataboyev.warehouse.entity.ProductCompany;
 import uz.ataboyev.warehouse.entity.Warehouse;
 import uz.ataboyev.warehouse.exception.RestException;
@@ -58,14 +59,18 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Override
     public ApiResult<?> edit(Long whId, WareHouseReqDto wareHouseReqDto) {
-        if (warehouseRepository.existsByName(wareHouseReqDto.getName()))
-            throw RestException.restThrow("Bu nomli omborxona mavjud", HttpStatus.CONFLICT);
+        if (!baseService.existsCompany(wareHouseReqDto.getCompanyId()))
+            return ApiResult.errorResponse("bazani o'zgartirmoqchi bo'lgan companiya mavjudmas");
+
+        if (warehouseRepository.existsByNameAndCompanyId(wareHouseReqDto.getName(),wareHouseReqDto.getCompanyId()))
+            return ApiResult.errorResponse("Sizning Tashkilotingizda Bu nomli omborxona mavjud ");
 
         Warehouse warehouse = baseService.getWarehouseByIdElseThrow(whId);
 
         warehouse.setName(wareHouseReqDto.getName());
+        warehouse.setCompanyId(wareHouseReqDto.getCompanyId());
         warehouseRepository.save(warehouse);
-        return ApiResult.successResponse(new WareHouseResDto(warehouse), "success edited");
+        return ApiResult.successResponse( "Omborxona muvaffaqiyatli o'zgartirildi");
     }
 
     @Override

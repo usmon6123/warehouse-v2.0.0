@@ -30,7 +30,7 @@ public class ProductCompany extends AbsLongEntity {
 
 //--------------------------------------------------------------------------
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String name;
 
 

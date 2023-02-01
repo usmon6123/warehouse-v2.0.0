@@ -60,8 +60,10 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
     @Override
     public ApiResult<?> edit(Long pCId, ProductCompanyReqDto productCompanyReqDto) {
 
-                if (!baseService.checkProductCompanyById(pCId))
-                    ApiResult.errorResponse("O'zgartirmoqchi bo'lgan mmaxsulot firmasi mavjudmas");
+        if (!baseService.checkProductCompanyById(pCId))
+            return ApiResult.errorResponse("O'zgartirmoqchi bo'lgan mmaxsulot firmasi mavjudmas");
+        if (baseService.checkProductCompanyWhIdAndName(productCompanyReqDto,pCId))
+            return ApiResult.errorResponse("Sizning omborxonangizda bu nomli mmaxsulot firmasi mavjud");
         ProductCompany prodCompany = baseService.getProdCompanyById(pCId);
         ProductCompany.edit(prodCompany, productCompanyReqDto);
         productCompanyRepository.save(prodCompany);

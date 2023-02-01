@@ -20,8 +20,8 @@ public class CompanyControllerImpl implements CompanyController {
     }
 
     @Override
-    public ApiResult<?> getOne(Long whId) {
-        return companyService.getOne(whId);
+    public ApiResult<?> getOne(Long compId) {
+        return companyService.getOne(compId);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class CompanyControllerImpl implements CompanyController {
     }
 
     @Override
-    public ApiResult<?> delete(Long whId) {
-        return companyService.delete(whId);
+    public ApiResult<?> delete(Long compId) {
+        return companyService.delete(compId);
     }
 }

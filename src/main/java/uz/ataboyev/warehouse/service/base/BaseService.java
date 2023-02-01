@@ -8,6 +8,7 @@ import uz.ataboyev.warehouse.enums.Type;
 import uz.ataboyev.warehouse.exception.RestException;
 import uz.ataboyev.warehouse.payload.OneWorkerSalary;
 import uz.ataboyev.warehouse.payload.OneWorkerSalaryDto;
+import uz.ataboyev.warehouse.payload.ProductCompanyReqDto;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientOrderDto;
 import uz.ataboyev.warehouse.payload.clientDtos.OrderItemByOrderId;
 import uz.ataboyev.warehouse.repository.*;
@@ -115,6 +116,11 @@ public class BaseService {
     public boolean checkProductCompanyById(Long productCompanyId) {
 
         return productCompanyRepository.existsById(productCompanyId);
+    }
+
+    public boolean checkProductCompanyWhIdAndName(ProductCompanyReqDto productCompanyReqDto, Long pcId) {
+
+        return productCompanyRepository.existsByNameAndWarehouseIdAndIdNot(productCompanyReqDto.getName(),productCompanyReqDto.getWhId(),pcId);
     }
 
     public static OneWorkerSalaryDto OneWorkerSalaryToDTO(OneWorkerSalary oneWorkerSalary) {

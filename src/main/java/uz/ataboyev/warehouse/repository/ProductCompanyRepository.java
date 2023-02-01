@@ -12,7 +12,7 @@ import java.util.List;
 public interface ProductCompanyRepository extends JpaRepository<ProductCompany, Long> {
     boolean existsByName(String name);
 
-    boolean existsByNameAndWarehouseId(String name, Long warehouseId);
+    boolean existsByNameAndWarehouseIdAndIdNot(String name, Long warehouse_id, Long pcId);
 
     boolean existsById(Long id);
 

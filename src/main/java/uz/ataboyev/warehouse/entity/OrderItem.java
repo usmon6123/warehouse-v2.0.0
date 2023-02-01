@@ -20,7 +20,7 @@ public class OrderItem extends AbsLongEntity {
 
 
     //--------------------------------------------------------------------------
-    @JoinColumn(name = "order_id", insertable = false, updatable = false)
+    @JoinColumn(insertable = false, updatable = false, name = "order_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
@@ -54,61 +54,62 @@ public class OrderItem extends AbsLongEntity {
     @Column(nullable = false)
     private Double amount;//dona summasi
 
+    private Double originalAmount;//tannarx dona summasi dollarda har doim
+
+    private Double mainPrice; //count * amount odatda kirim bo'lganda chiqimda sumda ham qiymat aralashib qolishi mumkin
+
+    private Double OriginalMainPrice; //mahsulotning tannarxi kirim bo'lganda amount*count ga teng bo'lsa, chiqimda esa originalAmount*count  ga tengdir
+
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PayTypeEnum payTypeEnum;//to'lov turi
 
-    private Double mainPrice; //mahsulotning tannarxi kirim bo'lganda amount*count ga teng bo'lsa, chiqimda esa sonini sotish narxiga emas bazadagi kirim narxiga hisoblab ko'paytiradi
-
-
-    public OrderItem(Long orderId, Long productId, Double count, CurrencyTypeEnum currencyType, Double amount, PayTypeEnum payTypeEnum) {
-        this.orderId = orderId;
-        this.productId = productId;
-        this.count = count;
-        this.currencyType = currencyType;
-        this.amount = amount;
-        this.payTypeEnum = payTypeEnum;
-    }
-
-    public OrderItem(Long orderId, Long productId, Double count, Double helperCount, CurrencyTypeEnum currencyType, Double amount, PayTypeEnum payTypeEnum, Double mainPrice) {
+    public OrderItem(Long orderId, Long productId, Double count, Double helperCount, CurrencyTypeEnum currencyType, Double amount, Double originalAmount, Double mainPrice, Double originalMainPrice, PayTypeEnum payTypeEnum) {
         this.orderId = orderId;
         this.productId = productId;
         this.count = count;
         this.helperCount = helperCount;
         this.currencyType = currencyType;
         this.amount = amount;
-        this.payTypeEnum = payTypeEnum;
+        this.originalAmount = originalAmount;
         this.mainPrice = mainPrice;
-    }
-
-    public OrderItem(Long orderId, Long productId, Double count, Double helperCount, CurrencyTypeEnum currencyType, Double amount, PayTypeEnum payTypeEnum) {
-        this.orderId = orderId;
-        this.productId = productId;
-        this.count = count;
-        this.helperCount = helperCount;
-        this.currencyType = currencyType;
-        this.amount = amount;
+        OriginalMainPrice = originalMainPrice;
         this.payTypeEnum = payTypeEnum;
     }
 
-
-    public static OrderItem make(OrderItemDto orderItemDto, Order order, Double mainPrice) {
+    public static OrderItem make(OrderItemDto orderItemDto, Order order, Double originalMainPrise) {
         CurrencyTypeEnum type = orderItemDto.getCurrencyTypeEnum();
         PayTypeEnum payTypeEnum = orderItemDto.getPayTypeEnum();
-        if ( order.getOrderType().equals(OrderType.INCOME)){
+        double mainPrice = 0d, originalAmount = 0d;
+
+        //agar kirim bo'lsa
+        if (order.getOrderType().equals(OrderType.INCOME)) {
+            originalAmount = orderItemDto.getAmount();
+            mainPrice = originalAmount * orderItemDto.getCount();
             type = CurrencyTypeEnum.DOLLAR;
-            payTypeEnum=PayTypeEnum.DEFAULT;
+            payTypeEnum = PayTypeEnum.DEFAULT;
+        } else {
+            //Bir donaning o'rtacha narxini dollarda ifodalaydi, sumda kirib kelgan bo'lsa orderdagi kurs orqali do'llarga o'giradi
+            originalAmount = orderItemDto.getCurrencyTypeEnum().equals(CurrencyTypeEnum.SUM) ? sumToDollar(originalMainPrise / orderItemDto.getCount(), order.getCurrencyRate()) : originalMainPrise / orderItemDto.getCount();
+            mainPrice = orderItemDto.getCount() * orderItemDto.getAmount();
         }
         return new OrderItem(
                 order.getId(),
                 orderItemDto.getProductId(),
                 orderItemDto.getCount(),
-                orderItemDto.getCount() > 0 ? orderItemDto.getCount() : 0d,
+                orderItemDto.getCount() > 0 ? orderItemDto.getCount() : 0d,//helper count
                 type,
                 orderItemDto.getAmount(),//dona summasi
-                payTypeEnum,
-                mainPrice
+                originalAmount,
+                mainPrice,
+                originalMainPrise,
+                payTypeEnum
         );
+    }
+
+    private static double sumToDollar(Double sum, Double currencyRate) {
+        return sum / currencyRate;
     }
 
 

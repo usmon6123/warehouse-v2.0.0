@@ -19,7 +19,7 @@ public class Order extends AbsLongEntity {
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
 
-    //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
     @JoinColumn(updatable = false, insertable = false, name = "client_id")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Client client;
@@ -39,7 +39,8 @@ public class Order extends AbsLongEntity {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
 
-    //------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
     @JoinColumn(insertable = false, updatable = false, name = "warehouse_id")
     @ManyToOne(optional = false)
     private Warehouse warehouse;
@@ -47,6 +48,8 @@ public class Order extends AbsLongEntity {
     @Column(name = "warehouse_id")
     private Long warehouseId;
 //------------------------------------------------------------------------------
+
+    private Double currencyRate;// ordereni ichida summ qatnashsa valyuta kursini kiritish kerak bo'ladi
 
 
 

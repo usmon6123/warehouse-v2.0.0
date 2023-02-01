@@ -8,12 +8,12 @@ import uz.ataboyev.warehouse.payload.CompanyReqDto;
 public interface CompanyService {
     ApiResult<?> add(CompanyReqDto companyReqDto);
 
-    ApiResult<?> getOne(Long whId);
+    ApiResult<?> getOne(Long compId);
 
     ApiResult<?> getAll();
 
     ApiResult<?> edit(Long compId, CompanyReqDto companyReqDto);
 
-    ApiResult<?> delete(Long whId);
+    ApiResult<?> delete(Long compId);
 
 }
