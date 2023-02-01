@@ -1,9 +1,11 @@
 package uz.ataboyev.warehouse.service;
 
+import org.springframework.stereotype.Service;
 import uz.ataboyev.warehouse.payload.*;
 
 import java.util.List;
 
+@Service
 public interface TradeService {
     ApiResult<?> add(TradeReqDto tradeReqDto);
 

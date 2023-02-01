@@ -54,7 +54,9 @@ public class TradeItem extends AbsLongEntity {
     @Column(nullable = false)
     private Double amount;//dona summasi
 
-    private Double mainPrice; // umumiy tannarx summa
+    private Double originalAmount; // donaning tannarx summasi
+
+    private Double mainPrice; // umumiy tannarx summa originalAmount*count
 
 
 
