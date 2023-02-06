@@ -34,8 +34,8 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public List<OptionResDto> getProductsForOption(Long pCId) {
-        return productService.getProductsForOptionByPCId(pCId);
+    public List<OptionResDto> getProductsForOption(Long whId) {
+        return productService.getProductsForOptionByWhId(whId);
     }
 
     @Override

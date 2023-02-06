@@ -23,8 +23,8 @@ public interface ProductController {
     List<ProductResDtoByWhId> getAllProductByWarehouseId(@PathVariable Long warehouseId);
 
     //MAHSULOT FIRMASINING ID SI BERILGANDA O'SHA FIRMANING BARCHA MAXSULOTLARI NAME VA ID SINI OLIB KELADI
-    @GetMapping("/get-products-for-option-by-company-id/{pCId}")
-    List<OptionResDto> getProductsForOption(@PathVariable Long pCId);
+    @GetMapping("/get-products-for-option-by-wh-id/{whId}")
+    List<OptionResDto> getProductsForOption(@PathVariable Long whId);
 
 
     //MIN COUNTIDAN KAM QOLGAN MAXSULOTLAR RO'YHATINI CHIQARADI

@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductResDto productResDto = ProductResDto.makeDTO(product);
 
-        return ApiResult.successResponse(productResDto,"product muvafaqiyatli saqlandi");
+        return ApiResult.successResponse(productResDto, "product muvafaqiyatli saqlandi");
     }
 
     @Override
@@ -58,8 +58,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<OptionResDto> getProductsForOptionByPCId(Long pCId) {
-        List<OptionResIn> productList = productRepository.findDistinctByProductCompanyId(pCId);
+    public List<OptionResDto> getProductsForOptionByWhId(Long whId) {
+        List<OptionInIdName> productList = productRepository.findDistinctByProductCompanyId(whId);
+
         return productList.stream().map(OptionResDto::make).collect(Collectors.toList());
     }
 
@@ -81,23 +82,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-
     @Override
     public ApiResult<?> edit(Long productId, ProductReqDto productReqDto) {
         Product oldProduct = baseService.getProductByIdOrElseThrow(productId);
-        Product editedProduct = editProduct(oldProduct,productReqDto);
+        Product editedProduct = editProduct(oldProduct, productReqDto);
         productRepository.save(editedProduct);
         return ApiResult.successResponse("Mahsulot muvafaqiyatli o'zgartirildi");
     }
 
     private Product editProduct(Product oldProduct, ProductReqDto productReqDto) {
-
+        if (Objects.isNull(productReqDto.getProductCompanyId()))
+            productReqDto.setProductCompanyId(oldProduct.getProductCompanyId());
+        else {
+            if (!baseService.checkProductCompanyById(productReqDto.getProductCompanyId()))
+                throw RestException.restThrow("O'zgartirmoqchi bo'lgan maxsulot companiyasi mavjudmas");
+            oldProduct.setProductCompanyId(productReqDto.getProductCompanyId());
+        }
         boolean check = productRepository.existsByNameAndIdNot(productReqDto.getName(), oldProduct.getId());
 
-        if (check)throw RestException.restThrow("Bu nomli va kodli Mahsulot bazada oldindan mavjud");
+        if (check) throw RestException.restThrow("Bu nomli va kodli Mahsulot bazada oldindan mavjud");
 
         oldProduct.setMinCount(productReqDto.getMinCount());
         oldProduct.setName(productReqDto.getName());
+
 
         return oldProduct;
     }
@@ -119,11 +126,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void savedProduct(Product product) {
-        try{
+        try {
             productRepository.save(product);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            throw RestException.restThrow("Product saqlashda muommo bo'ldi",HttpStatus.NOT_ACCEPTABLE);
+            throw RestException.restThrow("Product saqlashda muommo bo'ldi", HttpStatus.NOT_ACCEPTABLE);
         }
     }
 }

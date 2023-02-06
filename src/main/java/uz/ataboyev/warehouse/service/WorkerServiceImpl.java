@@ -45,7 +45,7 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public List<WorkerHistorySalaryResDto> getAllWorkersHistorySalary(Long startDate, Long endDate) {
-        List<WorkerHistorySalary> workersSalaries = workerSalaryRepository.getWorkerSalaries(longToTimestamp(startDate), longToTimestamp(endDate));
+        List<WorkerHistorySalary> workersSalaries = workerSalaryRepository.getWorkerSalaries(new Timestamp(startDate), new Timestamp(endDate));
         return workersSalaries.stream().map(WorkerHistorySalaryResDto::make).collect(Collectors.toList());
     }
 

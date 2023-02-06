@@ -11,7 +11,7 @@ public interface ProductService {
 
     List<ProductResDto> getAllProductsByPCId(Long pCId);
 
-    List<OptionResDto> getProductsForOptionByPCId(Long pCId);
+    List<OptionResDto> getProductsForOptionByWhId(Long whId);
 
     ApiResult<?> edit(Long productId, ProductReqDto productReqDto);
 

@@ -8,6 +8,7 @@ import uz.ataboyev.warehouse.enums.PayTypeEnum;
 import uz.ataboyev.warehouse.payload.OrderItemDto;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -80,7 +81,7 @@ public class OrderItem extends AbsLongEntity {
 
     public static OrderItem make(OrderItemDto orderItemDto, Order order, Double originalMainPrise) {
         CurrencyTypeEnum type = orderItemDto.getCurrencyTypeEnum();
-        PayTypeEnum payTypeEnum = orderItemDto.getPayTypeEnum();
+        PayTypeEnum payTypeEnum = Objects.equals(orderItemDto.getPayTypeEnum(),null)?PayTypeEnum.DEFAULT:orderItemDto.getPayTypeEnum();
         double mainPrice = 0d, originalAmount = 0d;
 
         //agar kirim bo'lsa

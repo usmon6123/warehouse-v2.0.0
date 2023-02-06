@@ -39,9 +39,7 @@ public interface WorkerSalaryRepository extends JpaRepository<WorkerSalary,Long>
                                         @Param("startDate") Timestamp startDate,
                                         @Param("endDate") Timestamp endDate);
 
-        @Query(value = "select ws.worker_id, ws.sum, ws.type " +
-                "from worker_salary ws; " +
-                "select ws.updated_at  as date, " +
+        @Query(value ="select ws.updated_at  as date, " +
                 "       ws.worker_id   as workerId, " +
                 "       c.name         as workerName, " +
                 "       ws.sum         as sum, " +

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import uz.ataboyev.warehouse.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import uz.ataboyev.warehouse.payload.OptionInIdName;
 import uz.ataboyev.warehouse.payload.OptionResIn;
 import uz.ataboyev.warehouse.payload.ProductResDtoByWhIdImpl;
 
@@ -26,10 +27,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findAllByProductCompanyId(Long pCId);
 
-    @Query(value = "select distinct p.name " +
+    @Query(value = "select p.id as id, p.name as name " +
             "from product p " +
-            "where p.product_company_id = :pCId",nativeQuery = true)
-    List<OptionResIn> findDistinctByProductCompanyId(@Param("pCId") Long pCId);
+            "inner join product_company pc on p.product_company_id = pc.id " +
+            "inner join warehouse w on w.id = pc.wh_id " +
+            "where w.id = :whId " +
+            "order by p.name asc",nativeQuery = true)
+    List<OptionInIdName> findDistinctByProductCompanyId(@Param("whId") Long whId);
 
 
 
