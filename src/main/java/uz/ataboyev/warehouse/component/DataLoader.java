@@ -24,6 +24,9 @@ public class DataLoader implements CommandLineRunner {
     private final ProductCompanyRepository brandRepository;
     private final ProductRepository productRepository;
     public static final String BOSS_NAME = "Begzod boss";
+    public static final Company naz = new Company("NAZ");
+    public static final Warehouse wh1 = new Warehouse("Sklad 1", naz.getId());
+
 //    private final BackupService backupService;
 
 
@@ -41,9 +44,9 @@ public class DataLoader implements CommandLineRunner {
 
 
     private void saveDefaultLoader() {
-        Company naz = companyRepository.save(new Company("NAZ"));
-        Warehouse wh1 = warehouseRepository.save(new Warehouse("Sklad 1", naz.getId()));
-        Warehouse wh2 = warehouseRepository.save(new Warehouse("Sklad 2", naz.getId()));
+        companyRepository.save(naz);
+        warehouseRepository.save(wh1);
+        warehouseRepository.save(new Warehouse("Sklad 2", naz.getId()));
         List<Client> clients = new ArrayList();
 
         //CLIENTLAR

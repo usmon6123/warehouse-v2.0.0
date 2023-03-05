@@ -5,6 +5,7 @@ public enum OrderType {
 
     INCOME, //"+" KIRIM
 
-    EXPENDITURE //"-" CHIQIM
+    EXPENDITURE, //"-" CHIQIM
+    DEFAULT //"0"
 
 }

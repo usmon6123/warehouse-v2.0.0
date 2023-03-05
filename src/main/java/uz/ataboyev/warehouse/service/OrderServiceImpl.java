@@ -310,7 +310,8 @@ public class OrderServiceImpl implements OrderService {
                     date,
                     clientDto,
                     order.getOrderPriceSum(),
-                    order.getOrderPriceDollar()));
+                    order.getOrderPriceDollar(),
+                    order.getOrderType()));
         }
 
         return new CustomPage<>(

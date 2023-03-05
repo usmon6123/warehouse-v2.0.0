@@ -3,15 +3,19 @@ package uz.ataboyev.warehouse.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import uz.ataboyev.warehouse.component.DataLoader;
 import uz.ataboyev.warehouse.entity.Client;
+import uz.ataboyev.warehouse.entity.Order;
 import uz.ataboyev.warehouse.entity.OrderItem;
 import uz.ataboyev.warehouse.enums.CurrencyTypeEnum;
+import uz.ataboyev.warehouse.enums.OrderType;
 import uz.ataboyev.warehouse.exception.RestException;
 import uz.ataboyev.warehouse.payload.ApiResult;
 import uz.ataboyev.warehouse.payload.OptionResDto;
 import uz.ataboyev.warehouse.payload.clientDtos.*;
 import uz.ataboyev.warehouse.repository.ClientRepository;
 import uz.ataboyev.warehouse.repository.OrderItemRepository;
+import uz.ataboyev.warehouse.repository.OrderRepository;
 import uz.ataboyev.warehouse.service.base.BaseService;
 
 import java.text.DateFormat;
@@ -27,6 +31,7 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final OrderItemRepository orderItemRepository;
+    private final OrderRepository orderRepository;
     private final BaseService baseService;
 
     @Override
@@ -37,10 +42,22 @@ public class ClientServiceImpl implements ClientService {
         Client client = Client.make(clientReqDto);
 
         saveClient(client);
-
+//        saveDefaultOrder(client);
         ClientResDto clientResDto = mapClient(client);
 
         return ApiResult.successResponse(clientResDto, "success aded");
+    }
+
+    private void saveDefaultOrder(Client client) {
+        try {
+            Order defaultOrder = orderRepository.save(new Order(OrderType.DEFAULT, client.getId(), "default", DataLoader.wh1.getId()));
+
+//            orderItemRepository.save(new OrderItem(defaultOrder.getId(),))
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
