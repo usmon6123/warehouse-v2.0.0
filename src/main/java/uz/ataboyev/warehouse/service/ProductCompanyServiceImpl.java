@@ -28,6 +28,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
 //            //NOMINI UNIQLIKKA TEKSHIRADI
 //            if (productCompanyRepository.existsByName(productCompanyReqDto.getName()) && baseService.existsWarehouse(productCompanyReqDto.getWhId()))
 //                throw RestException.restThrow("Maxsulot firmasi qo'shishda xatolik bo'ldi", HttpStatus.CONFLICT);
+            if(!baseService.existsWarehouse(productCompanyReqDto.getWhId()))return ApiResult.errorResponse("Maxsulot firmasi qo'shishda xatolik bo'ldi");
 
             ProductCompany productCompany = productCompanyRepository.save(Objects.requireNonNull(ProductCompany.make(productCompanyReqDto)));
             return ApiResult.successResponse("success added product company id: " + productCompany.getId() + " name: " + productCompany.getName());

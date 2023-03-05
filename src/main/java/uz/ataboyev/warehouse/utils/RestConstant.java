@@ -17,7 +17,7 @@ public interface RestConstant {
     String WAREHOUSE_CONTROLLER = BASE_PATH + "/warehouse";
     String WORKER_CONTROLLER = BASE_PATH + "/worker";
     String COMPANY_CONTROLLER = BASE_PATH + "/company"; ;
-    String PRODUCT_COMPANY_CONTROLLER = BASE_PATH + "/product-company"; ;
+    String PRODUCT_COMPANY_CONTROLLER = BASE_PATH + "/brend"; ;
     String CATEGORY_CONTROLLER = BASE_PATH + "/category";
     String PRODUCT_CONTROLLER = BASE_PATH + "/product";
     String CLIENT_CONTROLLER = BASE_PATH + "/client";
