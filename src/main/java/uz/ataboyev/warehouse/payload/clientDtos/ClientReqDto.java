@@ -10,6 +10,8 @@ import uz.ataboyev.warehouse.enums.Type;
 @NoArgsConstructor
 public class ClientReqDto {
 
+    private Long whId;
+
     private Type clientType;
 
     private String name;

@@ -12,6 +12,8 @@ public interface ClientService {
 
     List<ClientResDto> getAll();
 
+    List<ClientResDto> getAllWorkers();
+
     void checkingClientByIdListOrElseThrow(List<Long> clientIdList);
 
     ApiResult<?> add(ClientReqDto clientReqDto);
@@ -30,4 +32,5 @@ public interface ClientService {
     ClientHistoryDto clientHistory(Long clientId);
 
     List<ClientBalanceResDto> getClientsBalance(Long warehouseId);
+
 }

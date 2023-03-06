@@ -91,6 +91,7 @@ public class OrderItem extends AbsLongEntity {
             type = CurrencyTypeEnum.DOLLAR;
             payTypeEnum = PayTypeEnum.DEFAULT;
         } else {
+
             //Bir donaning o'rtacha narxini dollarda ifodalaydi, sumda kirib kelgan bo'lsa orderdagi kurs orqali do'llarga o'giradi
             originalAmount = orderItemDto.getCurrencyTypeEnum().equals(CurrencyTypeEnum.SUM) ? sumToDollar(originalMainPrise / orderItemDto.getCount(), order.getCurrencyRate()) : originalMainPrise / orderItemDto.getCount();
             mainPrice = orderItemDto.getCount() * orderItemDto.getAmount();

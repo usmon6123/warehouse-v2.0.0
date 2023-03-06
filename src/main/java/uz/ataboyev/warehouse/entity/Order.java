@@ -61,13 +61,31 @@ public class Order extends AbsLongEntity {
         this.warehouseId = warehouseId;
     }
 
-    public static Order make(SaveOrderDTO orderDTO) {
+//    public static Order make(SaveOrderDTO orderDTO) {
+//
+//        return new Order(
+//                orderDTO.getOrderType(),
+//                orderDTO.getClientId(),
+//                orderDTO.getDescription(),
+//                orderDTO.getWarehouseId()
+//        );
+//    }
 
+    public Order(OrderType orderType, Long clientId, String description, Long warehouseId, Double currencyRate) {
+        this.orderType = orderType;
+        this.clientId = clientId;
+        this.description = description;
+        this.warehouseId = warehouseId;
+        this.currencyRate = currencyRate;
+    }
+
+    public static Order make(SaveOrderDTO orderDTO) {
         return new Order(
                 orderDTO.getOrderType(),
                 orderDTO.getClientId(),
                 orderDTO.getDescription(),
-                orderDTO.getWarehouseId()
+                orderDTO.getWarehouseId(),
+                orderDTO.getCurrencyRate()
         );
     }
 }

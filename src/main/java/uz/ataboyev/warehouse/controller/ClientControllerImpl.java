@@ -35,6 +35,13 @@ public class ClientControllerImpl implements ClientController{
     }
 
     @Override
+    public List<ClientResDto> getAllWorkers() {
+
+        return clientService.getAllWorkers();
+    }
+
+
+    @Override
     public List<OptionResDto> getClients() {
         return clientService.getClientsForOption();
     }

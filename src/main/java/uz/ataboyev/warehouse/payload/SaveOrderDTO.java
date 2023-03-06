@@ -31,4 +31,14 @@ public class SaveOrderDTO {
 
     @NotNull(message = "warehouseId_not_null")
     private Long warehouseId;
+
+    private Double currencyRate;
+
+    public SaveOrderDTO(OrderType orderType, @NotNull(message = "order_items_not_null") List<OrderItemDto> orderItemDtoList, @NotNull(message = "clientId_not_null") Long clientId, String description, @NotNull(message = "warehouseId_not_null") Long warehouseId) {
+        this.orderType = orderType;
+        this.orderItemDtoList = orderItemDtoList;
+        this.clientId = clientId;
+        this.description = description;
+        this.warehouseId = warehouseId;
+    }
 }

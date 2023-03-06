@@ -18,10 +18,7 @@ import uz.ataboyev.warehouse.repository.OrderItemRepository;
 import uz.ataboyev.warehouse.repository.OrderRepository;
 import uz.ataboyev.warehouse.service.base.BaseService;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +34,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public ApiResult<?> add(ClientReqDto clientReqDto) {
 
-        checkingClientByPhoneNumberOrElseThrow(clientReqDto.getPhoneNumber(),clientReqDto.getName());
+        checkingClientByPhoneNumberOrElseThrow(clientReqDto.getPhoneNumber(), clientReqDto.getName());
 
         Client client = Client.make(clientReqDto);
 
@@ -54,7 +51,7 @@ public class ClientServiceImpl implements ClientService {
 
 //            orderItemRepository.save(new OrderItem(defaultOrder.getId(),))
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -112,8 +109,11 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<ClientBalanceResDto> getClientsBalance(Long warehouseId) {
         List<ClientBalance> allClientBalance = clientRepository.getALLClientBalance(warehouseId);
+        System.out.println("sssssssssssssssssssss");
         return ClientBalanceResDto.makeList(allClientBalance);
+
     }
+
 
     @Override
     public ApiResult<?> delete(Long clientId) {
@@ -135,6 +135,11 @@ public class ClientServiceImpl implements ClientService {
         return mapClients(clientList);
     }
 
+    @Override
+    public List<ClientResDto> getAllWorkers() {
+        List<Client> allWorkers = clientRepository.getAllWorkers();
+        return mapClients(allWorkers);
+    }
 
 
     @Override
@@ -155,8 +160,8 @@ public class ClientServiceImpl implements ClientService {
             ClientOrderDto clientOrderDto = mapClientOrderDto(clientItem);
 
             if (clientItem.getCurrencyType().equals(CurrencyTypeEnum.SUM))
-                sum += clientOrderDto.getPrice()!=null?clientOrderDto.getPrice():0D;
-            else dollar += clientOrderDto.getPrice()!=null?clientOrderDto.getPrice():0D;
+                sum += clientOrderDto.getPrice() != null ? clientOrderDto.getPrice() : 0D;
+            else dollar += clientOrderDto.getPrice() != null ? clientOrderDto.getPrice() : 0D;
 
             list.add(clientOrderDto);
         }
@@ -179,8 +184,8 @@ public class ClientServiceImpl implements ClientService {
         );
     }
 
-    private void checkingClientByPhoneNumberOrElseThrow(String phoneNumber,String name) {
-        if (clientRepository.existsByPhoneNumberAndName(phoneNumber,name))
+    private void checkingClientByPhoneNumberOrElseThrow(String phoneNumber, String name) {
+        if (clientRepository.existsByPhoneNumberAndName(phoneNumber, name))
             throw RestException.restThrow("Bu raqamli mijoz bazada mavjud", HttpStatus.CONFLICT);
     }
 

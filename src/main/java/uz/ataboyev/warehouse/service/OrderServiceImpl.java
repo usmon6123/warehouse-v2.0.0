@@ -408,3 +408,8 @@ public class OrderServiceImpl implements OrderService {
 
 
 }
+///  5 -> 1
+///  5 -> 2
+///  5 -> 3
+
+//   -8 ->4 5*1+3*2= 11

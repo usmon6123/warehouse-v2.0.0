@@ -16,16 +16,32 @@ public class ClientBalanceForRes {
     private boolean isSumPositive;//summa no'ldan baland bo'lsa true aks holda false
 
 
+    public ClientBalanceForRes(Long clientIdLong, String clientName) {
+        this.clientIdLong = clientIdLong;
+        this.clientName = clientName;
+    }
+
     public static ClientBalanceForRes make(ClientBalance clientBalance) {
-        return new ClientBalanceForRes(
-                clientBalance.getClientIdLong(),
-                clientBalance.getClientName(),
-                clientBalance.getBalanceDollar(),
-                //                String.valueOf((float)Double.parseDouble(clientBalance.getBalanceDollar())-0),
-                isPositive(clientBalance.getBalanceDollar()),
-                clientBalance.getBalanceSum(),
-                isPositive(clientBalance.getBalanceSum())
-        );
+        try {
+            return new ClientBalanceForRes(
+                    clientBalance.getClientIdLong(),
+                    clientBalance.getClientName(),
+                    clientBalance.getBalanceDollar(),
+                    isPositive(clientBalance.getBalanceDollar()),
+                    clientBalance.getBalanceSum(),
+                    isPositive(clientBalance.getBalanceSum())
+            );
+        }catch (Exception e){
+            return new ClientBalanceForRes(
+                    clientBalance.getClientIdLong(),
+                    clientBalance.getClientName(),
+                    "0",
+                    false,
+                    "0",
+                    false
+            );
+        }
+
     }
 
     private static boolean isPositive(String summa) {
