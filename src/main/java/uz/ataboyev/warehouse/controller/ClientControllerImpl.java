@@ -40,6 +40,12 @@ public class ClientControllerImpl implements ClientController{
         return clientService.getAllWorkers();
     }
 
+    @Override
+    public List<ClientResDto> getOrder(Long whId) {
+        return clientService.getOrder(whId);
+
+    }
+
 
     @Override
     public List<OptionResDto> getClients() {

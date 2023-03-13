@@ -93,6 +93,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public List<ClientResDto> getAllWorkers() {
+        List<Client> allWorkers = clientRepository.getAllWorkers();
+        return mapClients(allWorkers);
+    }
+
+    @Override
+    public List<ClientResDto> getOrder(Long whId) {
+        return mapClients(clientRepository.getOrder(whId));
+    }
+
+    @Override
     public List<OptionResDto> getClientsForOption() {
         List<Client> clientList = clientRepository.findAll();
         return clientList.stream().map(OptionResDto::make).collect(Collectors.toList());
@@ -102,14 +113,12 @@ public class ClientServiceImpl implements ClientService {
     public ClientHistoryDto clientHistory(Long clientId) {
 
         List<OrderItem> clientItems = orderItemRepository.findAllByOrder_ClientId(clientId);
-
         return mapClientHistoryDto(clientItems);
     }
 
     @Override
     public List<ClientBalanceResDto> getClientsBalance(Long warehouseId) {
         List<ClientBalance> allClientBalance = clientRepository.getALLClientBalance(warehouseId);
-        System.out.println("sssssssssssssssssssss");
         return ClientBalanceResDto.makeList(allClientBalance);
 
     }
@@ -133,12 +142,6 @@ public class ClientServiceImpl implements ClientService {
     public List<ClientResDto> getAll() {
         List<Client> clientList = clientRepository.findAll();
         return mapClients(clientList);
-    }
-
-    @Override
-    public List<ClientResDto> getAllWorkers() {
-        List<Client> allWorkers = clientRepository.getAllWorkers();
-        return mapClients(allWorkers);
     }
 
 

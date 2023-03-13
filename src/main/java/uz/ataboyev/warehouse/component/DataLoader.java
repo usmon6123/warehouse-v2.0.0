@@ -26,6 +26,7 @@ public class DataLoader implements CommandLineRunner {
     public static final String BOSS_NAME = "Begzod boss";
     public static final Company naz = new Company("NAZ");
     public static final Warehouse wh1 = new Warehouse("Sklad 1", naz.getId());
+    public static final Warehouse wh2 = new Warehouse("Sklad 2", naz.getId());
 
 //    private final BackupService backupService;
 
@@ -46,9 +47,12 @@ public class DataLoader implements CommandLineRunner {
     private void saveDefaultLoader() {
         companyRepository.save(naz);
         warehouseRepository.save(wh1);
-        warehouseRepository.save(new Warehouse("Sklad 2", naz.getId()));
+        warehouseRepository.save(wh2);
         List<Client> clients = new ArrayList();
 
+
+        clients.add(new Client(wh1.getId(), Type.OTHER, "savdo 1", "+998 ** *** ** **"));
+        clients.add(new Client(wh2.getId(), Type.OTHER, "savdo 2", "+998 ** *** ** **"));
         //CLIENTLAR
         clients.add(new Client(wh1.getId(), Type.COSTUMER, "7 Dokon  Nozim Rasxod", "+998 ** *** ** **"));
         clients.add(new Client(wh1.getId(),Type.COSTUMER, "7 Dokon  Nozim Savdo", "+998 ** *** ** **"));
@@ -123,6 +127,8 @@ public class DataLoader implements CommandLineRunner {
         brands.add(new ProductCompany(wh1.getId(),"Fauset"));
         ProductCompany mebel = new ProductCompany(wh1.getId(), "Mebel");
         brands.add(mebel);
+
+
         brandRepository.saveAll(brands);
 
         List<Product> products = new ArrayList<>();

@@ -33,4 +33,6 @@ public interface ClientService {
 
     List<ClientBalanceResDto> getClientsBalance(Long warehouseId);
 
+    List<ClientResDto> getOrder(Long whId);
+
 }

@@ -26,6 +26,9 @@ public interface ClientController {
     @GetMapping("/get-all-workers")
     List<ClientResDto> getAllWorkers();
 
+    @GetMapping("/get-order/{whId}")
+    List<ClientResDto> getOrder(@PathVariable Long whId);
+
     @GetMapping("/get-clients-for-option")
     List<OptionResDto>getClients();
 
