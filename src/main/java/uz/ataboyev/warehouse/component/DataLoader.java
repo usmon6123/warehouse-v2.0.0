@@ -28,8 +28,6 @@ public class DataLoader implements CommandLineRunner {
     public static final Company naz = new Company("NAZ");
     public static final Warehouse wh1 = new Warehouse("Sklad 1", naz.getId());
     public static final Warehouse wh2 = new Warehouse("Sklad 2", naz.getId());
-    public static final Client savdo1 = new Client(wh1.getId(), Type.OTHER, "savdo 1", "+998 ** *** ** **");
-    public static final Client savdo2 = new Client(wh2.getId(), Type.OTHER, "savdo 2", "+998 ** *** ** **");
 
     public static final CurrencyPrise currencyPrise =  new CurrencyPrise(1130000d);
 
@@ -56,8 +54,8 @@ public class DataLoader implements CommandLineRunner {
         List<Client> clients = new ArrayList();
 
 
-        clients.add(savdo1);
-        clients.add(savdo2);
+        clients.add(new Client(wh1.getId(), Type.OTHER, "savdo 1", "+998 ** *** ** **"));
+        clients.add(new Client(wh2.getId(), Type.OTHER, "savdo 2", "+998 ** *** ** **"));
         //CLIENTLAR
         clients.add(new Client(wh1.getId(), Type.COSTUMER, "7 Dokon  Nozim Rasxod", "+998 ** *** ** **"));
         clients.add(new Client(wh1.getId(),Type.COSTUMER, "7 Dokon  Nozim Savdo", "+998 ** *** ** **"));

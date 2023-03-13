@@ -10,9 +10,6 @@ import uz.ataboyev.warehouse.payload.OrderItemDto;
 import javax.persistence.*;
 import java.util.Objects;
 
-import static uz.ataboyev.warehouse.component.DataLoader.savdo1;
-import static uz.ataboyev.warehouse.component.DataLoader.savdo2;
-
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
@@ -82,15 +79,12 @@ public class OrderItem extends AbsLongEntity {
         this.payTypeEnum = payTypeEnum;
     }
 
-    public static OrderItem make(OrderItemDto orderItemDto, Order order, Double originalMainPrise) {
+    public static OrderItem make(OrderItemDto orderItemDto, Order order, Double originalMainPrise,Client savdo) {
         CurrencyTypeEnum type = orderItemDto.getCurrencyTypeEnum();
         PayTypeEnum payTypeEnum = Objects.equals(orderItemDto.getPayTypeEnum(), null) ? PayTypeEnum.DEFAULT : orderItemDto.getPayTypeEnum();
         double mainPrice = 0d, originalAmount = 0d;
 
-
-        if (order.getClient().getId().equals(savdo1.getId()) || order.getClient().getId().equals(savdo2.getId())) {
-
-
+        if (order.getClient().getId().equals(savdo.getId())) {
             if (order.getOrderType().equals(OrderType.INCOME)) {
                 if (orderItemDto.getCurrencyTypeEnum().equals(CurrencyTypeEnum.SUM)) {
                     double inDollar = sumToDollar(orderItemDto.getAmount(), order.getCurrencyRate());

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.ataboyev.warehouse.entity.Client;
 import uz.ataboyev.warehouse.entity.Order;
 import uz.ataboyev.warehouse.entity.OrderItem;
 import uz.ataboyev.warehouse.entity.Product;
@@ -18,6 +19,7 @@ import uz.ataboyev.warehouse.exception.RestException;
 import uz.ataboyev.warehouse.payload.*;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientDtoForPageable;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientOrderDto;
+import uz.ataboyev.warehouse.repository.ClientRepository;
 import uz.ataboyev.warehouse.repository.OrderItemRepository;
 import uz.ataboyev.warehouse.repository.OrderRepository;
 import uz.ataboyev.warehouse.service.base.BaseService;
@@ -39,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final ClientService clientService;
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ClientRepository clientRepository;
     private final BaseService baseService;
 
     @Override
@@ -295,7 +298,9 @@ public class OrderServiceImpl implements OrderService {
                     }
                 }
             }
-            orderItems.add(OrderItem.make(orderItemDto, order, originalMainPrise));
+
+            Client savdo = clientRepository.getSavdo(order.getWarehouseId());
+            orderItems.add(OrderItem.make(orderItemDto, order, originalMainPrise,savdo));
             originalMainPrise = 0d;
         }
         return orderItems;
