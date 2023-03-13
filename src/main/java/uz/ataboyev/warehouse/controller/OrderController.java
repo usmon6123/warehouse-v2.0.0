@@ -24,8 +24,8 @@ public interface OrderController {
     @PostMapping("/add-order")
     ApiResult<?> addOrder(@RequestBody @Valid SaveOrderDTO orderDTO);
 
-    @PostMapping("/add-savdo")
-    ApiResult<?> addSavdo(@RequestBody @Valid SaveOrderDTO orderDTO);
+//    @PostMapping("/add-savdo")
+//    ApiResult<?> addSavdo(@RequestBody @Valid SaveOrderDTO orderDTO);
 
     @GetMapping("/get-one/{orderId}")
     OneOrderHistoryDto getOrderItemsOneById(@PathVariable Long orderId);

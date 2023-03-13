@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import static uz.ataboyev.warehouse.entity.OrderItem.sumToDollar;
 import static uz.ataboyev.warehouse.enums.CurrencyTypeEnum.SUM;
 import static uz.ataboyev.warehouse.enums.PayTypeEnum.*;
 
@@ -63,10 +64,10 @@ public class OrderServiceImpl implements OrderService {
         //warehouse id, product id va client idlarni haqiqatdan bazada mavjudligini soradi
         checkingOrderDTO(orderDTO);
 
-        //chiqim bo'lganda bazadan minus qilish uchun kerak bo'ladi
+        //chiqim bo'lganda yoki savdo1da tavar sotilganda bazadan minus qilish uchun kerak bo'ladi
         double d = -1;
 
-        //agar kirim bo'lsa
+        //agar kirim bo'lsa yoki savdo1dan sotilgan tavarni qaytarib olib kelishsa
         if (orderDTO.getOrderType().equals(OrderType.INCOME)) {
             d = 1;
         }
@@ -93,40 +94,6 @@ public class OrderServiceImpl implements OrderService {
         return ApiResult.successResponse("Oldi berdi muvaffaqiyatli saqlandi");
     }
 
-    @Override
-    public ApiResult<?> addSavdo(SaveOrderDTO orderDTO) {
-
-        //warehouse id, product id va client idlarni haqiqatdan bazada mavjudligini soradi
-        checkingOrderDTO(orderDTO);
-
-        //tavar sotish  obordan minus qilish uchun kerak bo'ladi
-        double d = -1;
-
-        //tavar olib qolish omborga tavar kiradi pul chiqadi .
-        if (orderDTO.getOrderType().equals(OrderType.INCOME)) {
-            d = 1;
-        }
-
-        //PRODUCTLARNI BAZADAGI SONLARINI O'ZGARTIRIB SAQLAB QO'YDI
-        String isGood = editProductCount(orderDTO.getOrderItemDtoList(), d);
-        if (!isGood.equals("good")) return ApiResult.errorResponse(isGood);
-
-        Order order = Order.make(orderDTO);
-
-        orderRepository.save(order);
-
-        List<OrderItem> orderItems = makeOIList(orderDTO.getOrderItemDtoList(), order, d);
-
-        //SAVDODAGI BARCHA MAXSULOTLARNI NARHINI YIG'IBERADI SUM VA DOLLARNI ADDENNI QILIB
-        OrderPriceDto orderPriceDto = calculationOrderPrice(orderItems);
-
-        saveOrder(order, orderPriceDto);
-
-        orderItemListSaved(orderItems);
-
-        return ApiResult.successResponse("Oldi berdi muvaffaqiyatli saqlandi");
-
-    }
 
 
     @Override
@@ -296,8 +263,14 @@ public class OrderServiceImpl implements OrderService {
             helperCount = count;
             amount = orderItemDto.getAmount();
 
+
+
             //YANI MAXSULOT BAZAGA KIRAYOTGAN BO'LSA ASOSIY NARXINI DONA SUMMASINI KELGAN BAXOSIGA KO'PAYTIRISH ORQALI HAL QILIB QO'YA QOLAMIZ
             if (count > 0) {
+
+                //bu if savdo1 yoki savdo2 vaqtida tavarni sumda qaytarib olib galsala ishlidi
+                if (orderItemDto.getCurrencyTypeEnum().equals(SUM))amount = sumToDollar(amount,order.getCurrencyRate());
+
                 originalMainPrise += amount * count;
             }
             //OMBORDAN MAXSULOT CHIQIB KETAYOTGAN PAYTI BIZ SOTILAYOTGAN NARXI BO'YICHA EMAS BALKI OMBORGA KELGAN VAQTIDAGI SUMMASI BO'YICHA MINUS QILIB QO'YAMIZ FIFO QOIDASI BO'YICHA bu yo'l orqali

@@ -58,9 +58,9 @@ public class OrderItem extends AbsLongEntity {
     @Column(nullable = false)
     private Double amount;//dona summasi
 
-    private Double originalAmount;//tannarx dona summasi dollarda har doim
-
     private Double mainPrice; //count * amount odatda kirim bo'lganda chiqimda sumda ham qiymat aralashib qolishi mumkin
+
+    private Double originalAmount;//tannarx dona summasi dollarda har doim
 
     private Double OriginalMainPrice; //mahsulotning tannarxi kirim bo'lganda amount*count ga teng bo'lsa, chiqimda esa originalAmount*count  ga tengdir
 
@@ -91,20 +91,25 @@ public class OrderItem extends AbsLongEntity {
         if (order.getClient().getId().equals(savdo1.getId()) || order.getClient().getId().equals(savdo2.getId())) {
 
 
-        }
+            if (order.getOrderType().equals(OrderType.INCOME)) {
+                if (orderItemDto.getCurrencyTypeEnum().equals(CurrencyTypeEnum.SUM)) {
+                    double inDollar = sumToDollar(orderItemDto.getAmount(), order.getCurrencyRate());
+                    originalMainPrise = inDollar * orderItemDto.getCount();
+                }
+            }
 
+
+        }
 
         //agar kirim bo'lsa
         else if (order.getOrderType().equals(OrderType.INCOME)) {
-            originalAmount = orderItemDto.getAmount();
-            mainPrice = originalAmount * orderItemDto.getCount();
-            type = CurrencyTypeEnum.DOLLAR;
-            payTypeEnum = PayTypeEnum.DEFAULT;
+            if (type == CurrencyTypeEnum.DOLLAR) originalAmount = orderItemDto.getAmount();
+            else originalAmount = sumToDollar(orderItemDto.getAmount(), order.getCurrencyRate());
         } else {
-
             //Bir donaning o'rtacha narxini dollarda ifodalaydi, sumda kirib kelgan bo'lsa orderdagi kurs orqali do'llarga o'giradi
-            originalAmount = orderItemDto.getCurrencyTypeEnum().equals(CurrencyTypeEnum.SUM) ? sumToDollar(originalMainPrise / orderItemDto.getCount(), order.getCurrencyRate()) : originalMainPrise / orderItemDto.getCount();
-            mainPrice = orderItemDto.getCount() * orderItemDto.getAmount();
+            originalAmount = orderItemDto.getCurrencyTypeEnum().equals(CurrencyTypeEnum.SUM)
+                    ? sumToDollar(originalMainPrise / orderItemDto.getCount(), order.getCurrencyRate())
+                    : originalMainPrise / orderItemDto.getCount();
         }
         return new OrderItem(
                 order.getId(),
@@ -114,13 +119,13 @@ public class OrderItem extends AbsLongEntity {
                 type,
                 orderItemDto.getAmount(),//dona summasi
                 originalAmount,
-                mainPrice,
+                orderItemDto.getCount() * orderItemDto.getAmount(),
                 originalMainPrise,
                 payTypeEnum
         );
     }
 
-    private static double sumToDollar(Double sum, Double currencyRate) {
+    public static double sumToDollar(Double sum, Double currencyRate) {
         return sum / currencyRate;
     }
 

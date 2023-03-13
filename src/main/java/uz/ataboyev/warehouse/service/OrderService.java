@@ -11,7 +11,7 @@ public interface OrderService {
 
     ApiResult<?> addOrder(SaveOrderDTO orderDTO);
 
-    ApiResult<?> addSavdo(SaveOrderDTO orderDTO);
+//    ApiResult<?> addSavdo(SaveOrderDTO orderDTO);
 
     ApiResult<?> getAllOrder();
 
