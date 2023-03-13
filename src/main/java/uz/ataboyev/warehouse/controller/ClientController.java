@@ -1,6 +1,7 @@
 package uz.ataboyev.warehouse.controller;
 
 import org.springframework.web.bind.annotation.*;
+import uz.ataboyev.warehouse.entity.Client;
 import uz.ataboyev.warehouse.payload.*;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientBalanceResDto;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientHistoryDto;
@@ -39,9 +40,12 @@ public interface ClientController {
     ApiResult<?> delete(@PathVariable Long clientId);
 
     @GetMapping("client-history/{clientId}")
-    ClientHistoryDto clientHistory(Long clientId);
+    ClientHistoryDto clientHistory(@PathVariable Long clientId);
 
     @GetMapping("clients-balance-by-wh-id/{warehouseId}")
-    List<ClientBalanceResDto> getClientsBalance(Long warehouseId);
+    List<ClientBalanceResDto> getClientsBalance(@PathVariable Long warehouseId);
+
+    @GetMapping("get-savda/{whId}")
+    Client getSavdo(@PathVariable Long whId);
 
 }

@@ -9,6 +9,7 @@ import uz.ataboyev.warehouse.entity.Order;
 import uz.ataboyev.warehouse.entity.OrderItem;
 import uz.ataboyev.warehouse.enums.CurrencyTypeEnum;
 import uz.ataboyev.warehouse.enums.OrderType;
+import uz.ataboyev.warehouse.enums.Type;
 import uz.ataboyev.warehouse.exception.RestException;
 import uz.ataboyev.warehouse.payload.ApiResult;
 import uz.ataboyev.warehouse.payload.OptionResDto;
@@ -104,6 +105,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client getSavdo(Long whId) {
+        return  clientRepository.getSavdo(whId);
+    }
+
+    @Override
     public List<OptionResDto> getClientsForOption() {
         List<Client> clientList = clientRepository.findAll();
         return clientList.stream().map(OptionResDto::make).collect(Collectors.toList());
@@ -128,10 +134,13 @@ public class ClientServiceImpl implements ClientService {
     public ApiResult<?> delete(Long clientId) {
 
         //MIJOZNING ORDERLARI BOR BOLSA OCHIRMAYMIZ
-        baseService.checkOrdersOfClient(clientId);
+        if (orderRepository.existsByClientId(clientId)){
+            return ApiResult.errorResponse("Bu mijozni o'chira olmaysiz, uning oldi berdilari bo'lgan ekan siz bn");
+        }
+
 
         if (!baseService.existsClientById(clientId)) {
-            throw RestException.restThrow("o'chirmoqchi bo'lgan mijozis bazada mavjudmas");
+            return ApiResult.errorResponse("o'chirmoqchi bo'lgan mijozis bazada mavjudmas");
         }
 
         clientRepository.deleteById(clientId);

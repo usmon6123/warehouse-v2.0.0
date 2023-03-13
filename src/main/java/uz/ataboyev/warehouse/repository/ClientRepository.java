@@ -56,6 +56,10 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query(value = "select * from client c where c.client_type = 'OTHER' and c.wh_id = :whId ", nativeQuery = true)
     List<Client> getOrder(@Param("whId") Long whId);
 
+    @Query(value = "select * from client c where c.wh_id = :whId and client_type = 'OTHER'", nativeQuery = true)
+    Client getSavdo(@Param("whId") Long whId);
+
+
 
 //    @SqlResultSetMapping(name = "mapClientHistoryDto",
 //            classes = @ConstructorResult(targetClass = ClientHistoryDto.class,columns = )

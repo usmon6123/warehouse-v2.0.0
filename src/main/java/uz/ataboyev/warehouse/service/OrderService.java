@@ -11,6 +11,8 @@ public interface OrderService {
 
     ApiResult<?> addOrder(SaveOrderDTO orderDTO);
 
+    ApiResult<?> addSavdo(SaveOrderDTO orderDTO);
+
     ApiResult<?> getAllOrder();
 
     CustomPage<OrderPageDTO> getOrdersPageable(int page, int size,Long warehouseId);
@@ -20,5 +22,4 @@ public interface OrderService {
     OneOrderHistoryDto  getOrderItemsOneById(Long orderId);
 
     OrderPriceDtoForPayTypeRes getPriceAmountByPayType(Long whId);
-
 }

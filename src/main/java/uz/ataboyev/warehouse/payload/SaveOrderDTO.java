@@ -32,7 +32,7 @@ public class SaveOrderDTO {
     @NotNull(message = "warehouseId_not_null")
     private Long warehouseId;
 
-    private Double currencyRate;
+    private Double currencyRate; //dollar valyutasi ex: 100$ = 1 113 000 sum
 
     public SaveOrderDTO(OrderType orderType, @NotNull(message = "order_items_not_null") List<OrderItemDto> orderItemDtoList, @NotNull(message = "clientId_not_null") Long clientId, String description, @NotNull(message = "warehouseId_not_null") Long warehouseId) {
         this.orderType = orderType;

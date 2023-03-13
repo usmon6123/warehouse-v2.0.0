@@ -93,6 +93,41 @@ public class OrderServiceImpl implements OrderService {
         return ApiResult.successResponse("Oldi berdi muvaffaqiyatli saqlandi");
     }
 
+    @Override
+    public ApiResult<?> addSavdo(SaveOrderDTO orderDTO) {
+
+        //warehouse id, product id va client idlarni haqiqatdan bazada mavjudligini soradi
+        checkingOrderDTO(orderDTO);
+
+        //tavar sotish  obordan minus qilish uchun kerak bo'ladi
+        double d = -1;
+
+        //tavar olib qolish omborga tavar kiradi pul chiqadi .
+        if (orderDTO.getOrderType().equals(OrderType.INCOME)) {
+            d = 1;
+        }
+
+        //PRODUCTLARNI BAZADAGI SONLARINI O'ZGARTIRIB SAQLAB QO'YDI
+        String isGood = editProductCount(orderDTO.getOrderItemDtoList(), d);
+        if (!isGood.equals("good")) return ApiResult.errorResponse(isGood);
+
+        Order order = Order.make(orderDTO);
+
+        orderRepository.save(order);
+
+        List<OrderItem> orderItems = makeOIList(orderDTO.getOrderItemDtoList(), order, d);
+
+        //SAVDODAGI BARCHA MAXSULOTLARNI NARHINI YIG'IBERADI SUM VA DOLLARNI ADDENNI QILIB
+        OrderPriceDto orderPriceDto = calculationOrderPrice(orderItems);
+
+        saveOrder(order, orderPriceDto);
+
+        orderItemListSaved(orderItems);
+
+        return ApiResult.successResponse("Oldi berdi muvaffaqiyatli saqlandi");
+
+    }
+
 
     @Override
     public ApiResult<?> getAllOrder() {
@@ -254,7 +289,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderItemDto orderItemDto : orderItemDtoList) {
 
             //chiqimda di=-1;
-            //shunchaki mijoz chiqmda minus o'ziqo'shib yozib yuborsa to'g'irlash uchun
+            //shunchaki mijoz chiqmda minus o'zi qo'shib yozib yuborsa to'g'irlash uchun
             orderItemDto.setCount(di * Math.abs(orderItemDto.getCount()));
 
             count = orderItemDto.getCount();

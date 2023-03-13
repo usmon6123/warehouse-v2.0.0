@@ -6,6 +6,7 @@ import uz.ataboyev.warehouse.payload.*;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientOrderDto;
 import uz.ataboyev.warehouse.service.OrderService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -22,7 +23,13 @@ public class OrderControllerImpl implements OrderController {
 
     @Override
     public ApiResult<?> addOrder(SaveOrderDTO orderDTO) {
+
         return orderService.addOrder(orderDTO);
+    }
+
+    @Override
+    public ApiResult<?> addSavdo(@Valid SaveOrderDTO orderDTO) {
+        return orderService.addSavdo(orderDTO);
     }
 
     @Override

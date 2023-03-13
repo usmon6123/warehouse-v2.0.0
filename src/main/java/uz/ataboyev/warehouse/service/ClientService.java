@@ -1,5 +1,6 @@
 package uz.ataboyev.warehouse.service;
 
+import uz.ataboyev.warehouse.entity.Client;
 import uz.ataboyev.warehouse.payload.*;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientBalanceResDto;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientHistoryDto;
@@ -34,5 +35,7 @@ public interface ClientService {
     List<ClientBalanceResDto> getClientsBalance(Long warehouseId);
 
     List<ClientResDto> getOrder(Long whId);
+
+    Client getSavdo(Long whId);
 
 }
