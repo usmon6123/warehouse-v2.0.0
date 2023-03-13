@@ -28,13 +28,13 @@ public class CurrencyController {
 
     @GetMapping("get-currency")
     public Double currencyPrise(){
-        CurrencyPrise prise = currencyRepository.findById(currencyPrise.getId()).get();
+        CurrencyPrise prise = currencyRepository.findAll().get(0);
         return prise.getCurrency();
     }
     @PutMapping("put-currency")
     public Double putCurrency(@RequestBody double currencyPrice){
         try {
-            CurrencyPrise prise = currencyRepository.findById(currencyPrise.getId()).get();
+            CurrencyPrise prise = currencyRepository.findAll().get(0);
             prise.setCurrency(currencyPrice);
             currencyRepository.save(prise);
             return currencyPrice;
