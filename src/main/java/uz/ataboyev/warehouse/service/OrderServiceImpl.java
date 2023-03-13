@@ -8,10 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uz.ataboyev.warehouse.entity.Client;
-import uz.ataboyev.warehouse.entity.Order;
-import uz.ataboyev.warehouse.entity.OrderItem;
-import uz.ataboyev.warehouse.entity.Product;
+import uz.ataboyev.warehouse.component.DataLoader;
+import uz.ataboyev.warehouse.entity.*;
 import uz.ataboyev.warehouse.enums.CurrencyTypeEnum;
 import uz.ataboyev.warehouse.enums.OrderType;
 import uz.ataboyev.warehouse.enums.PayTypeEnum;
@@ -20,6 +18,7 @@ import uz.ataboyev.warehouse.payload.*;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientDtoForPageable;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientOrderDto;
 import uz.ataboyev.warehouse.repository.ClientRepository;
+import uz.ataboyev.warehouse.repository.CurrencyRepository;
 import uz.ataboyev.warehouse.repository.OrderItemRepository;
 import uz.ataboyev.warehouse.repository.OrderRepository;
 import uz.ataboyev.warehouse.service.base.BaseService;
@@ -29,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import static uz.ataboyev.warehouse.component.DataLoader.currencyPrise;
 import static uz.ataboyev.warehouse.entity.OrderItem.sumToDollar;
 import static uz.ataboyev.warehouse.enums.CurrencyTypeEnum.SUM;
 import static uz.ataboyev.warehouse.enums.PayTypeEnum.*;
@@ -42,6 +42,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ClientRepository clientRepository;
+    private final CurrencyRepository currencyRepository;
     private final BaseService baseService;
 
     @Override
@@ -83,6 +84,13 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = Order.make(orderDTO);
 
+        //dollarni kursini o'zgartirib qoyadi
+        if (!orderDTO.getCurrencyRate().equals(null)){
+            List<CurrencyPrise> currencyPrise = currencyRepository.findAll();
+            currencyPrise.get(0).setCurrency(orderDTO.getCurrencyRate());
+            currencyRepository.save(currencyPrise.get(0));
+        }
+
         orderRepository.save(order);
 
         List<OrderItem> orderItems = makeOIList(orderDTO.getOrderItemDtoList(), order, d);
@@ -97,6 +105,9 @@ public class OrderServiceImpl implements OrderService {
         return ApiResult.successResponse("Oldi berdi muvaffaqiyatli saqlandi");
     }
 
+    private void updateCurrencyRate(Order order) {
+
+    }
 
 
     @Override

@@ -84,15 +84,13 @@ public class OrderItem extends AbsLongEntity {
         PayTypeEnum payTypeEnum = Objects.equals(orderItemDto.getPayTypeEnum(), null) ? PayTypeEnum.DEFAULT : orderItemDto.getPayTypeEnum();
         double mainPrice = 0d, originalAmount = 0d;
 
-        if (order.getClient().getId().equals(savdo.getId())) {
+        if (order.getClientId().equals(savdo.getId())) {
             if (order.getOrderType().equals(OrderType.INCOME)) {
                 if (orderItemDto.getCurrencyTypeEnum().equals(CurrencyTypeEnum.SUM)) {
                     double inDollar = sumToDollar(orderItemDto.getAmount(), order.getCurrencyRate());
                     originalMainPrise = inDollar * orderItemDto.getCount();
                 }
             }
-
-
         }
 
         //agar kirim bo'lsa

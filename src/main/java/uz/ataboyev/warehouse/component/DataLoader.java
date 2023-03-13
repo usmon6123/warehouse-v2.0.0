@@ -181,7 +181,7 @@ public class DataLoader implements CommandLineRunner {
 
         productRepository.saveAll(products);
 
-        currencyRepository.save(currencyPrise);
+        currencyRepository.save(DataLoader.currencyPrise);
 
     }
 
