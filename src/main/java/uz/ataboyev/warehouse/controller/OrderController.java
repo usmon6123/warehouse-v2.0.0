@@ -8,8 +8,8 @@ import uz.ataboyev.warehouse.utils.RestConstant;
 import javax.validation.Valid;
 import java.util.List;
 
-import static uz.ataboyev.warehouse.utils.AppConstant.DEFAULT_PAGE_NUMBER;
-import static uz.ataboyev.warehouse.utils.AppConstant.DEFAULT_PAGE_SIZE;
+import static uz.ataboyev.warehouse.utils.AppConstant.*;
+import static uz.ataboyev.warehouse.utils.AppConstant.DEFAULT_END_DATE;
 
 @RequestMapping(path = OrderController.ORDER_CONTROLLER)
 public interface OrderController {
@@ -44,4 +44,8 @@ public interface OrderController {
     @GetMapping("/get-price-pay-type/{whId}")
     OrderPriceDtoForPayTypeRes getPriceAmountByPayType(@PathVariable Long whId);
 
+    @GetMapping("sold-products/{whId}")
+    List<SoldProducts> getSoldProducts(@RequestParam (defaultValue = DEFAULT_START_DATE)Long startDate,
+                                       @RequestParam (defaultValue = DEFAULT_END_DATE) Long endDate,
+                                       @PathVariable Long whId);
 }

@@ -23,6 +23,7 @@ import uz.ataboyev.warehouse.repository.OrderItemRepository;
 import uz.ataboyev.warehouse.repository.OrderRepository;
 import uz.ataboyev.warehouse.service.base.BaseService;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -253,6 +254,12 @@ public class OrderServiceImpl implements OrderService {
 
 
         return new OrderPriceDtoForPayTypeRes(orderPriceByType, allSum, allDollar);
+    }
+
+    @Override
+    public List<SoldProducts> getSoldProducts(Long startDate, Long endDate, Long whId) {
+
+        return orderItemRepository.getSoldProducts(whId, new Timestamp(startDate),new Timestamp(endDate));
     }
 
 

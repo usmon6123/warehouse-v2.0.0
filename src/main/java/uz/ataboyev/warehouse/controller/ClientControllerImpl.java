@@ -74,7 +74,7 @@ public class ClientControllerImpl implements ClientController{
     }
 
     @Override
-    public Client getSavdo(Long whId) {
+    public OptionResDto getSavdo(Long whId) {
         return clientService.getSavdo(whId);
     }
 }

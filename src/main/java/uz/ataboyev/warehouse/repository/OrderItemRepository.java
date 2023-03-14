@@ -4,11 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import uz.ataboyev.warehouse.entity.OrderItem;
-import uz.ataboyev.warehouse.payload.DoubleNumber;
-import uz.ataboyev.warehouse.payload.OrderPriceDtoForPayType;
 import uz.ataboyev.warehouse.payload.OrderPriceForPayType;
+import uz.ataboyev.warehouse.payload.SoldProducts;
 import uz.ataboyev.warehouse.payload.clientDtos.OrderItemByOrderId;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,5 +54,28 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query(value = "select oi.* from order_item as oi " +
             "    where (oi.helper_count>0 and oi.product_id = :productId) order by oi.created_at asc limit 1 ",nativeQuery = true)
     Optional<OrderItem> getFIFOOrderItem (@Param("productId")Long productId);
-
+    
+    @Query(value = "select row_number() over (order by sum(oi.count) desc )                   as rowNum, " +
+            "       p.id                                                               as productId, " +
+            "       p.name                                                             as productName, " +
+            "       sum(-1 * oi.count)                                                 as soldCount, " +
+            "       round(cast(-1 * sum(oi.original_main_price) as numeric(36, 2)), 2) as originalTotalPrice, " +
+            "       sum(CASE " +
+            "               WHEN (OI.currency_type = 'DOLLAR') THEN -1 * oi.main_price " +
+            "               ELSE -1 * oi.main_price / o.currency_rate END)             as totalPrice, " +
+            "       sum(CASE " +
+            "               WHEN (OI.currency_type = 'DOLLAR') THEN -1 * oi.main_price " +
+            "               ELSE -1 * oi.main_price / o.currency_rate END - " +
+            "           (-1 * oi.original_main_price))                                   as difference " +
+            "from order_item oi " +
+            "         join product p on p.id = oi.product_id " +
+            "         join orders o on o.id = oi.order_id " +
+            "where o.order_type = 'EXPENDITURE' and o.warehouse_id = :whId " +
+            "                                   and ws.created_at >= :startDate " +
+            "                                   and ws.created_at <= :endDate" +
+            "group by p.id, p.name ", nativeQuery = true)
+    List<SoldProducts> getSoldProducts(@Param("whId") Long whId,
+                                       @Param("startDate") Timestamp startDate,
+                                       @Param("endDate") Timestamp endDate);
+    
 }

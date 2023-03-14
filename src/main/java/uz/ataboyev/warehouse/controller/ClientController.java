@@ -46,6 +46,6 @@ public interface ClientController {
     List<ClientBalanceResDto> getClientsBalance(@PathVariable Long warehouseId);
 
     @GetMapping("get-savda/{whId}")
-    Client getSavdo(@PathVariable Long whId);
+    OptionResDto getSavdo(@PathVariable Long whId);
 
 }

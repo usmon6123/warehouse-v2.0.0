@@ -36,6 +36,6 @@ public interface ClientService {
 
     List<ClientResDto> getOrder(Long whId);
 
-    Client getSavdo(Long whId);
+    OptionResDto getSavdo(Long whId);
 
 }

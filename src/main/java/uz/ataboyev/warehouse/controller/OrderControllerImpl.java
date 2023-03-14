@@ -57,5 +57,10 @@ public class OrderControllerImpl implements OrderController {
         return orderService.getPriceAmountByPayType(whId);
     }
 
+    @Override
+    public List<SoldProducts> getSoldProducts(Long startDate, Long endDate, Long whId) {
+        return orderService.getSoldProducts(startDate,endDate,whId);
+    }
+
 
 }

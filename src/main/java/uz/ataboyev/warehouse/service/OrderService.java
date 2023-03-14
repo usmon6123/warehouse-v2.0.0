@@ -22,4 +22,6 @@ public interface OrderService {
     OneOrderHistoryDto  getOrderItemsOneById(Long orderId);
 
     OrderPriceDtoForPayTypeRes getPriceAmountByPayType(Long whId);
+
+    List<SoldProducts> getSoldProducts(Long startDate, Long endDate, Long whId);
 }

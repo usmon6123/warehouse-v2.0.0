@@ -26,4 +26,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "select o.description as description from orders o where o.id = :id",nativeQuery = true)
     Optional<GetDescriptionByOrderId> getDescriptionById(@Param("id")Long id);
 
+
+
 }

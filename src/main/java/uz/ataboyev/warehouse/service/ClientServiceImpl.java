@@ -105,8 +105,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client getSavdo(Long whId) {
-        return  clientRepository.getSavdo(whId);
+    public OptionResDto getSavdo(Long whId) {
+        return  OptionResDto.make(clientRepository.getSavdo(whId));
     }
 
     @Override
