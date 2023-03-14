@@ -1,6 +1,7 @@
 package uz.ataboyev.warehouse.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import uz.ataboyev.warehouse.component.DataLoader;
@@ -89,7 +90,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<ClientResDto> getAllClient() {
-        List<Client> clientList = clientRepository.findAll();
+        List<Client> clientList = clientRepository.findAllByClientTypeNot(Type.OTHER);
         return mapClients(clientList);
     }
 

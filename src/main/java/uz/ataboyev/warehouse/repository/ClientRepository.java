@@ -40,6 +40,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findByClientType(Type clientType);
 
     List<Client> findAllByClientType(Type clientType);
+    List<Client> findAllByClientTypeNot(Type clientType);
 
     @Query(value = "select  c.client_type as clientType, " +
             "                     CAST (c.id as varchar) as clientId, " +

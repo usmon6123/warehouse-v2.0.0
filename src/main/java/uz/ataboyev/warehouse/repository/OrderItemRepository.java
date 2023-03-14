@@ -71,8 +71,8 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "         join product p on p.id = oi.product_id " +
             "         join orders o on o.id = oi.order_id " +
             "where o.order_type = 'EXPENDITURE' and o.warehouse_id = :whId " +
-            "                                   and ws.created_at >= :startDate " +
-            "                                   and ws.created_at <= :endDate" +
+            "                                   and oi.created_at >= :startDate " +
+            "                                   and oi.created_at <= :endDate " +
             "group by p.id, p.name ", nativeQuery = true)
     List<SoldProducts> getSoldProducts(@Param("whId") Long whId,
                                        @Param("startDate") Timestamp startDate,
