@@ -38,4 +38,6 @@ public interface ClientService {
 
     OptionResDto getSavdo(Long whId);
 
+    ClientHistoryDto getSavdoHistory(Long startDate, Long endDate, Long whId);
+
 }

@@ -13,6 +13,8 @@ import uz.ataboyev.warehouse.enums.OrderType;
 import uz.ataboyev.warehouse.enums.Type;
 import uz.ataboyev.warehouse.exception.RestException;
 import uz.ataboyev.warehouse.payload.ApiResult;
+import uz.ataboyev.warehouse.payload.ClientItemsForHistory;
+import uz.ataboyev.warehouse.payload.DollarAndSum;
 import uz.ataboyev.warehouse.payload.OptionResDto;
 import uz.ataboyev.warehouse.payload.clientDtos.*;
 import uz.ataboyev.warehouse.repository.ClientRepository;
@@ -20,6 +22,7 @@ import uz.ataboyev.warehouse.repository.OrderItemRepository;
 import uz.ataboyev.warehouse.repository.OrderRepository;
 import uz.ataboyev.warehouse.service.base.BaseService;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -124,6 +127,18 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public ClientHistoryDto getSavdoHistory(Long startDate, Long endDate, Long whId) {
+        List<ClientItemsForHistory> getItems =  orderItemRepository.getSavdoHistory(new Timestamp(startDate),new Timestamp(endDate),whId);
+        List<ClientOrderDto> collect = getItems.stream().map(ClientOrderDto::make2).collect(Collectors.toList());
+        DollarAndSum total = orderItemRepository.getTotalSavdoHistory(new Timestamp(startDate),new Timestamp(endDate),whId);
+        return new ClientHistoryDto(
+                collect,
+                Double.parseDouble(total.getTotalSum()),
+                Double.parseDouble(total.getTotalDollar())
+        );
+    }
+
+    @Override
     public List<ClientBalanceResDto> getClientsBalance(Long warehouseId) {
         List<ClientBalance> allClientBalance = clientRepository.getALLClientBalance(warehouseId);
         return ClientBalanceResDto.makeList(allClientBalance);
@@ -169,7 +184,6 @@ public class ClientServiceImpl implements ClientService {
         Double dollar = 0D;
         List<ClientOrderDto> list = new ArrayList<>();
         for (OrderItem clientItem : clientItems) {
-
             ClientOrderDto clientOrderDto = mapClientOrderDto(clientItem);
 
             if (clientItem.getCurrencyType().equals(CurrencyTypeEnum.SUM))

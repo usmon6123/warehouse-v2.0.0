@@ -77,4 +77,10 @@ public class ClientControllerImpl implements ClientController{
     public OptionResDto getSavdo(Long whId) {
         return clientService.getSavdo(whId);
     }
+
+    @Override
+    public ClientHistoryDto getSavdoHistory(Long startDate, Long endDate, Long whId) {
+
+        return clientService.getSavdoHistory(startDate,endDate,whId);
+    }
 }

@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import uz.ataboyev.warehouse.entity.OrderItem;
+import uz.ataboyev.warehouse.payload.ClientItemsForHistory;
+import uz.ataboyev.warehouse.payload.DollarAndSum;
 import uz.ataboyev.warehouse.payload.OrderPriceForPayType;
 import uz.ataboyev.warehouse.payload.SoldProducts;
 import uz.ataboyev.warehouse.payload.clientDtos.OrderItemByOrderId;
@@ -54,7 +56,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query(value = "select oi.* from order_item as oi " +
             "    where (oi.helper_count>0 and oi.product_id = :productId) order by oi.created_at asc limit 1 ",nativeQuery = true)
     Optional<OrderItem> getFIFOOrderItem (@Param("productId")Long productId);
-    
+
     @Query(value = "select row_number() over (order by sum(oi.count) desc )                   as rowNum, " +
             "       p.id                                                               as productId, " +
             "       p.name                                                             as productName, " +
@@ -77,5 +79,40 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     List<SoldProducts> getSoldProducts(@Param("whId") Long whId,
                                        @Param("startDate") Timestamp startDate,
                                        @Param("endDate") Timestamp endDate);
-    
+
+
+    @Query(value = "select to_char(oi.created_at, 'dd-MM-yyyy') as data, " +
+            "       p.name                               as productName, " +
+            "       -1 * oi.count                        as count, " +
+            "       oi.amount                            as countSum, " +
+            "       oi.currency_type                     as currencyTypeEnum, " +
+            "       -1 * oi.amount * oi.count            as price " +
+            "from order_item oi\n" +
+            "         join orders o on o.id = oi.order_id and oi.created_at >= :startDate and oi.created_at <= :endDate " +
+            "         join product p on p.id = oi.product_id " +
+            "         join client c on c.id = o.client_id and c.client_type = 'OTHER' and c.wh_id = :whId " +
+            "order by oi.created_at desc,p.name ", nativeQuery = true)
+    List<ClientItemsForHistory> getSavdoHistory(@Param("startDate") Timestamp startDate,
+                                                @Param("endDate") Timestamp endDate,
+                                                @Param("whId") Long whId);
+
+    @Query(value = "with totalSum as (select sum(-1 * oi.count * oi.amount) as sum " +
+            "                  from order_item oi " +
+            "                           join orders o on o.id = oi.order_id and oi.created_at >= :startDate " +
+            "                      and oi.created_at <= :endDate " +
+            "                      and oi.currency_type = 'SUM' " +
+            "                           join client c on c.id = o.client_id and c.client_type = 'OTHER' and c.wh_id = :whId " +
+            "                  group by oi.currency_type), " +
+            "     totalDollar as (select sum(-1 * oi.count * oi.amount) as dollar " +
+            "                     from order_item oi " +
+            "                              join orders o on o.id = oi.order_id and oi.created_at >= :startDate " +
+            "                         and oi.created_at <= :endDate " +
+            "                         and oi.currency_type = 'DOLLAR' " +
+            "                              join client c on c.id = o.client_id and c.client_type = 'OTHER' and c.wh_id = :whId " +
+            "     ) " +
+            "select totalDollar.dollar as totalDollar, totalSum.sum as totalSum " +
+            "from totalSum, " +
+            "     totalDollar",nativeQuery = true)
+    DollarAndSum getTotalSavdoHistory(Timestamp timestamp, Timestamp timestamp1, Long whId);
+
 }

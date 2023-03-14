@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.ataboyev.warehouse.enums.CurrencyTypeEnum;
 import uz.ataboyev.warehouse.enums.PayTypeEnum;
+import uz.ataboyev.warehouse.payload.ClientItemsForHistory;
 
 import javax.validation.constraints.NotNull;
 
@@ -52,5 +53,19 @@ public class ClientOrderDto {
 
     private static Double StringParseDouble(String stringNumber) {
         return Double.parseDouble(stringNumber);
+    }
+
+    public static ClientOrderDto make2(ClientItemsForHistory clientItem) {
+        Double counts = Double.parseDouble(clientItem.getCount());
+        Double countSum = Double.parseDouble(clientItem.getCountSum());
+        return new ClientOrderDto(
+                clientItem.getData(),
+                clientItem.getProductName(),
+                counts,
+                countSum,
+                CurrencyTypeEnum.valueOf(clientItem.getCurrencyTypeEnum()),
+                counts * countSum,
+                PayTypeEnum.DEFAULT
+        );
     }
 }

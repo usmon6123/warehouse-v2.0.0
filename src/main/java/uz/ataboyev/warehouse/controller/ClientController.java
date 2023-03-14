@@ -1,8 +1,8 @@
 package uz.ataboyev.warehouse.controller;
 
 import org.springframework.web.bind.annotation.*;
-import uz.ataboyev.warehouse.entity.Client;
-import uz.ataboyev.warehouse.payload.*;
+import uz.ataboyev.warehouse.payload.ApiResult;
+import uz.ataboyev.warehouse.payload.OptionResDto;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientBalanceResDto;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientHistoryDto;
 import uz.ataboyev.warehouse.payload.clientDtos.ClientReqDto;
@@ -11,6 +11,9 @@ import uz.ataboyev.warehouse.utils.RestConstant;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static uz.ataboyev.warehouse.utils.AppConstant.DEFAULT_END_DATE;
+import static uz.ataboyev.warehouse.utils.AppConstant.DEFAULT_START_DATE;
 
 @RequestMapping(path = RestConstant.CLIENT_CONTROLLER)
 public interface ClientController {
@@ -31,7 +34,7 @@ public interface ClientController {
     List<ClientResDto> getOrder(@PathVariable Long whId);
 
     @GetMapping("/get-clients-for-option")
-    List<OptionResDto>getClients();
+    List<OptionResDto> getClients();
 
     @PutMapping("/edit/{clientId}")
     ApiResult<?> edit(@PathVariable Long clientId, @RequestBody ClientReqDto clientReqDto);
@@ -48,4 +51,8 @@ public interface ClientController {
     @GetMapping("get-savda/{whId}")
     OptionResDto getSavdo(@PathVariable Long whId);
 
+    @GetMapping("get-savda-history/{whId}")
+    ClientHistoryDto getSavdoHistory(@RequestParam(defaultValue = DEFAULT_START_DATE) Long startDate,
+                                     @RequestParam(defaultValue = DEFAULT_END_DATE) Long endDate,
+                                     @PathVariable Long whId);
 }
