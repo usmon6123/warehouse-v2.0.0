@@ -2,10 +2,8 @@ package uz.ataboyev.warehouse.entity;
 
 import lombok.*;
 import uz.ataboyev.warehouse.entity.template.AbsLongEntity;
-import uz.ataboyev.warehouse.enums.Type;
-import uz.ataboyev.warehouse.payload.clientDtos.ClientReqDto;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 
 @EqualsAndHashCode(callSuper = true)
 @Getter
@@ -14,5 +12,5 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 public class CurrencyPrise extends AbsLongEntity {
-    private Double currency ;
+    private Integer currency;
 }

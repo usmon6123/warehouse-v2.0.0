@@ -87,7 +87,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "       oi.count                             as count, " +
             "       oi.amount                            as countSum, " +
             "       oi.currency_type                     as currencyTypeEnum, " +
-            "       -1 * oi.amount * oi.count            as price " +
+            "       (-1 * oi.amount * oi.count )           as price " +
             "from order_item oi\n" +
             "         join orders o on o.id = oi.order_id and oi.created_at >= :startDate and oi.created_at <= :endDate " +
             "         join product p on p.id = oi.product_id " +

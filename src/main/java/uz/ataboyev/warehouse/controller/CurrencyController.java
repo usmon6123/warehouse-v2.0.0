@@ -27,12 +27,12 @@ public class CurrencyController {
      private final CurrencyRepository currencyRepository;
 
     @GetMapping("get-currency")
-    public Double currencyPrise(){
+    public Integer currencyPrise(){
         CurrencyPrise prise = currencyRepository.findAll().get(0);
         return prise.getCurrency();
     }
     @PutMapping("put-currency")
-    public Double putCurrency(@RequestBody double currencyPrice){
+    public Integer putCurrency(@RequestBody int currencyPrice){
         try {
             CurrencyPrise prise = currencyRepository.findAll().get(0);
             prise.setCurrency(currencyPrice);
@@ -40,7 +40,7 @@ public class CurrencyController {
             return currencyPrice;
         }catch (Exception e){
             e.printStackTrace();
-            return -1d;
+            return -1;
         }
     }
 }

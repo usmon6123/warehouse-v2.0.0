@@ -49,7 +49,7 @@ public class Order extends AbsLongEntity {
     private Long warehouseId;
 //------------------------------------------------------------------------------
 
-    private Double currencyRate;// ordereni ichida summ qatnashsa valyuta kursini kiritish kerak bo'ladi
+    private Integer currencyRate;// ordereni ichida summ qatnashsa valyuta kursini kiritish kerak bo'ladi
 
 
 
@@ -71,7 +71,7 @@ public class Order extends AbsLongEntity {
 //        );
 //    }
 
-    public Order(OrderType orderType, Long clientId, String description, Long warehouseId, Double currencyRate) {
+    public Order(OrderType orderType, Long clientId, String description, Long warehouseId, Integer currencyRate) {
         this.orderType = orderType;
         this.clientId = clientId;
         this.description = description;

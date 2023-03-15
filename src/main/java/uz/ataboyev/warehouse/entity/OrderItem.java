@@ -117,7 +117,7 @@ public class OrderItem extends AbsLongEntity {
         );
     }
 
-    public static double sumToDollar(Double sum, Double currencyRate) {
+    public static double sumToDollar(Double sum, Integer currencyRate) {
         return sum / currencyRate;
     }
 

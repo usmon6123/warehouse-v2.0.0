@@ -135,11 +135,13 @@ public class ClientServiceImpl implements ClientService {
             List<ClientItemsForHistory> getItems = orderItemRepository.getSavdoHistory(new Timestamp(startDate), new Timestamp(endDate), whId);
             List<ClientOrderDto> collect = getItems.stream().map(ClientOrderDto::make2).collect(Collectors.toList());
             DollarAndSum total = orderItemRepository.getTotalSavdoHistory(new Timestamp(startDate), new Timestamp(endDate), whId);
+            System.out.println(collect.toString());
             return new ClientHistoryDto(
                     collect,
                     Double.parseDouble(total.getTotalSum()),
                     Double.parseDouble(total.getTotalDollar())
             );
+
         }catch (Exception e){
             return new ClientHistoryDto();
         }

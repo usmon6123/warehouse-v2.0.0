@@ -29,7 +29,7 @@ public class DataLoader implements CommandLineRunner {
     public static final Warehouse wh1 = new Warehouse("Sklad 1", naz.getId());
     public static final Warehouse wh2 = new Warehouse("Sklad 2", naz.getId());
 
-    public static final CurrencyPrise currencyPrise =  new CurrencyPrise(1130000d);
+    public static final CurrencyPrise currencyPrise =  new CurrencyPrise(1130);
 
 //    private final BackupService backupService;
 
@@ -56,6 +56,7 @@ public class DataLoader implements CommandLineRunner {
 
         clients.add(new Client(wh1.getId(), Type.OTHER, "savdo 1", "+998 ** *** ** **"));
         clients.add(new Client(wh2.getId(), Type.OTHER, "savdo 2", "+998 ** *** ** **"));
+
         //CLIENTLAR
         clients.add(new Client(wh1.getId(), Type.COSTUMER, "7 Dokon  Nozim Rasxod", "+998 ** *** ** **"));
         clients.add(new Client(wh1.getId(),Type.COSTUMER, "7 Dokon  Nozim Savdo", "+998 ** *** ** **"));
@@ -112,6 +113,7 @@ public class DataLoader implements CommandLineRunner {
         clients.add(new Client(wh1.getId(),Type.CONSUMER, "R-50 terminal", "+998 ** *** ** **"));
         clients.add(new Client(wh1.getId(),Type.WORKER, "Dilshod Nasirov", "+998 ** *** ** **"));
         clients.add(new Client(wh1.getId(),Type.WORKER, "Begzod", "+998 ** *** ** **"));
+        clients.add(new Client(wh1.getId(),Type.WORKER, "sklad harajatlari", "+998 ** *** ** **"));
         clientRepository.saveAll(clients);
 
         List<ProductCompany> brands = new ArrayList();
