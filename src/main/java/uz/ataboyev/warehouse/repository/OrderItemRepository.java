@@ -57,24 +57,25 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "    where (oi.helper_count>0 and oi.product_id = :productId) order by oi.created_at asc limit 1 ",nativeQuery = true)
     Optional<OrderItem> getFIFOOrderItem (@Param("productId")Long productId);
 
-    @Query(value = "select row_number() over (order by sum(oi.count) desc )                   as rowNum, " +
-            "       p.id                                                               as productId, " +
-            "       p.name                                                             as productName, " +
-            "       sum(-1 * oi.count)                                                 as soldCount, " +
-            "       round(cast(-1 * sum(oi.original_main_price) as numeric(36, 2)), 2) as originalTotalPrice, " +
+    @Query(value = "select row_number() over (order by sum(oi.count) desc )                                         as rowNum, " +
+            "       p.id                                                                                     as productId, " +
+            "       p.name                                                                                   as productName, " +
+            "       sum(-1 * oi.count)                                                                       as soldCount, " +
+            "       round(cast(-1 * sum(oi.original_main_price) as numeric(36, 2)), 2)                       as originalTotalPrice, " +
             "       sum(CASE " +
-            "               WHEN (OI.currency_type = 'DOLLAR') THEN -1 * oi.main_price " +
-            "               ELSE -1 * oi.main_price / o.currency_rate END)             as totalPrice, " +
+            "               WHEN (OI.currency_type = 'DOLLAR') THEN round(cast(-1 * oi.main_price as numeric(36, 2)), 2) " +
+            "               ELSE round(cast(-1 * oi.main_price / o.currency_rate as numeric(36, 2)), 2) END) as totalPrice, " +
             "       sum(CASE " +
-            "               WHEN (OI.currency_type = 'DOLLAR') THEN -1 * oi.main_price " +
-            "               ELSE -1 * oi.main_price / o.currency_rate END - " +
-            "           (-1 * oi.original_main_price))                                   as difference " +
+            "               WHEN (OI.currency_type = 'DOLLAR') THEN round(cast(-1 * oi.main_price as numeric(36, 2)), 2) " +
+            "               ELSE round(cast(-1 * oi.main_price / o.currency_rate as numeric(36, 2)), 2) END - " +
+            "           round(cast(-1 * oi.original_main_price as numeric(36, 2)), 2))                       as difference " +
             "from order_item oi " +
             "         join product p on p.id = oi.product_id " +
             "         join orders o on o.id = oi.order_id " +
-            "where o.order_type = 'EXPENDITURE' and o.warehouse_id = :whId " +
-            "                                   and oi.created_at >= :startDate " +
-            "                                   and oi.created_at <= :endDate " +
+            "where o.order_type = 'EXPENDITURE' " +
+            "  and o.warehouse_id = :whId " +
+            "  and oi.created_at >= :startDate " +
+            "  and oi.created_at <= :endDate " +
             "group by p.id, p.name ", nativeQuery = true)
     List<SoldProducts> getSoldProducts(@Param("whId") Long whId,
                                        @Param("startDate") Timestamp startDate,
@@ -108,11 +109,13 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "                              join orders o on o.id = oi.order_id and oi.created_at >= :startDate " +
             "                         and oi.created_at <= :endDate " +
             "                         and oi.currency_type = 'DOLLAR' " +
-            "                              join client c on c.id = o.client_id and c.client_type = 'OTHER' and c.wh_id = :whId " +
-            "     ) " +
-            "select totalDollar.dollar as totalDollar, totalSum.sum as totalSum " +
+            "                              join client c on c.id = o.client_id and c.client_type = 'OTHER' and c.wh_id = :whId) " +
+            "select totalDollar.dollar as totalDollar, " +
+            "       totalSum.sum       as totalSum " +
             "from totalSum, " +
-            "     totalDollar",nativeQuery = true)
-    DollarAndSum getTotalSavdoHistory(Timestamp timestamp, Timestamp timestamp1, Long whId);
+            "     totalDollar limit 1",nativeQuery = true)
+    DollarAndSum getTotalSavdoHistory(@Param("startDate") Timestamp startDate,
+                                      @Param("endDate") Timestamp endDate,
+                                      @Param("whId") Long whId);
 
 }
