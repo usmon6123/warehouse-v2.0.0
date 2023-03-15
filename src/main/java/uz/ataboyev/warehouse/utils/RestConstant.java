@@ -22,6 +22,7 @@ public interface RestConstant {
     String PRODUCT_CONTROLLER = BASE_PATH + "/product";
     String CLIENT_CONTROLLER = BASE_PATH + "/client";
     String CURRENCY = BASE_PATH + "/currency";
+    String KASSA = BASE_PATH + "/kassa";
 
     String TRADE_CONTROLLER = BASE_PATH + "/trade";
 }

@@ -84,7 +84,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
     @Query(value = "select to_char(oi.created_at, 'dd-MM-yyyy') as data, " +
             "       p.name                               as productName, " +
-            "       -1 * oi.count                        as count, " +
+            "       oi.count                             as count, " +
             "       oi.amount                            as countSum, " +
             "       oi.currency_type                     as currencyTypeEnum, " +
             "       -1 * oi.amount * oi.count            as price " +

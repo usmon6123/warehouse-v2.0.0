@@ -62,10 +62,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
 
 
-//    @SqlResultSetMapping(name = "mapClientHistoryDto",
-//            classes = @ConstructorResult(targetClass = ClientHistoryDto.class,columns = )
-//                        )
-//    ClientHistoryDto clientHistoryDto(@Param("clientId")Long clientId);
 
 
 }

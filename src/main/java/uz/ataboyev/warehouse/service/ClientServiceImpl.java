@@ -121,21 +121,28 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientHistoryDto clientHistory(Long clientId) {
-
-        List<OrderItem> clientItems = orderItemRepository.findAllByOrder_ClientId(clientId);
-        return mapClientHistoryDto(clientItems);
+        try {
+            List<OrderItem> clientItems = orderItemRepository.findAllByOrder_ClientId(clientId);
+            return mapClientHistoryDto(clientItems);
+        }catch (Exception e){
+            return new ClientHistoryDto();
+        }
     }
 
     @Override
     public ClientHistoryDto getSavdoHistory(Long startDate, Long endDate, Long whId) {
-        List<ClientItemsForHistory> getItems =  orderItemRepository.getSavdoHistory(new Timestamp(startDate),new Timestamp(endDate),whId);
-        List<ClientOrderDto> collect = getItems.stream().map(ClientOrderDto::make2).collect(Collectors.toList());
-        DollarAndSum total = orderItemRepository.getTotalSavdoHistory(new Timestamp(startDate),new Timestamp(endDate),whId);
-        return new ClientHistoryDto(
-                collect,
-                Double.parseDouble(total.getTotalSum()),
-                Double.parseDouble(total.getTotalDollar())
-        );
+        try {
+            List<ClientItemsForHistory> getItems = orderItemRepository.getSavdoHistory(new Timestamp(startDate), new Timestamp(endDate), whId);
+            List<ClientOrderDto> collect = getItems.stream().map(ClientOrderDto::make2).collect(Collectors.toList());
+            DollarAndSum total = orderItemRepository.getTotalSavdoHistory(new Timestamp(startDate), new Timestamp(endDate), whId);
+            return new ClientHistoryDto(
+                    collect,
+                    Double.parseDouble(total.getTotalSum()),
+                    Double.parseDouble(total.getTotalDollar())
+            );
+        }catch (Exception e){
+            return new ClientHistoryDto();
+        }
     }
 
     @Override
